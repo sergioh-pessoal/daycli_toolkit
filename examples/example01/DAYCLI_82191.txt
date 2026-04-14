@@ -1,0 +1,129 @@
+&SECTION1
+CENTER=43           !<-Identification of Originating/Generating center (See commom code table C1 and C11 )
+SUBCENTER=255       !<-Sub-center of generating center (See common code C12)
+/
+! Note:  255 or -99999999   <- Missing value
+
+!-------------------------
+! Location identification 
+!-------------------------
+&STATION_ID
+LATITUDE=-1.43583
+LONGITUDE=-48.43722
+WIGOS=0-76-0-1501402000W82191
+WMO=82191
+HTEMP=1.5            !Highr of temperature sensor
+HA= 7.1              !007030-HEIGHT OF STATION GROUND ABOVE MEAN SEA LEVEL
+SMC_TEMP=7           !008095-SITING AND MEASUREMENT QUALITY CLASSFICATION FOR TEMPERATURE
+SMC_PREC=7           !008096-SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR PRECIPITAION
+METHOD_TM=3          !008094-Method used to calculate the average daily temperature
+TIME_OFFSET=0        !Time difference in minutes:  Local Meteorologica Time Zone - UTC (LMTZ-UTC)
+                     !Use 0 in case of the use of UTC values
+/
+
+
+!** Period over which the daily measurement is made (LMTZ)
+!  Informs the hour and minute and the interval DT
+!  DT =1 Fron the current day in LMTZ to next day
+!  DT=-1 From the previous day in LMTZ to current daily
+
+!*** Maximum temperature ***
+!* Hour and minute
+&STIME_TX
+HOUR=00
+MINUTE=00
+DT=-1
+/
+
+! *** Minimum temperature ***
+&STIME_TN
+HOUR=12
+MINUTE=00
+DT=-1
+/
+
+! *** Meam temperature ***
+&STIME_TM
+HOUR=00
+MINUTE=00
+DT=-1
+/
+
+! *** Total Acumulate precipitation (RR) ***
+&STIME_RR
+HOUR=12
+MINUTE=00
+DT=-1
+/
+
+! *** fresh snow (DS) ***
+&STIME_DS
+HOUR=00
+MINUTE=00
+DT=255
+/
+
+! *** total snow deph (TSD) ***
+&STIME_TSD
+HOUR=00
+MINUTE=00
+DT=255
+/
+!----------------------------------------------------------------------------------
+! Note: In this text file; Each parameter is indentified by the followed Acronyms:
+!  rr = Total Acumulate Precipitation
+!  ds = Fresh snow
+!  tsd= Total Snow deph
+!  tn = Minimum temperature
+!  tx = Maximum temperature
+!  tm = Mean temparature
+!
+!  The quality flag for each respective parameter above are indentified by:
+!  qrr; qds; qtsd,qtn,qtx,qtm
+!
+!  The value of quality flag are:
+!   0 = Data checked and declared good;
+!   1 = Data checked and declared suspect;
+!   2 = Data checked and declared aggregated;
+!   3 = Data checked and declared out of instrument range;
+!   4 = Data checked; declared aggregated; and out of instrument range;
+!   5 = Parameter is not measured at the station;
+!   6 = Daily value not provided;
+!   7 = Data unchecked,
+!   8-254 = Reserved;
+!---------------------------------------------------------------------------------
+&DATA_SECTION
+!date= Reference date and time in LMTZ
+!date ;rr(mm); qrr;  ds;qds;tsd;qtsd;tn(c);qtn; tx(c);  qtx;tm(c);qtm
+20220101 ;2.9;   0;   ; 5 ;   ; 5 ;   23.0; 0;   31.9;    0;25.9; 0
+20220102 ;7,4;   0;   ; 5 ;   ; 5 ;   23,4; 0;   32.3;    0;26.3; 0
+20220103 ;6.0;   0;   ; 5 ;   ; 5 ;   22.8; 0;   28.4;    0;24.7; 0
+20220104 ;3.3;   0;   ; 5 ;   ; 5 ;   21.7; 0;   32.1;    0;25.8; 0
+20220105 ;1.4;   0;   ; 5 ;   ; 5 ;   22.8; 0;   31.5;    0;26.4; 0
+20220106 ;0.2;   0;   ; 5 ;   ; 5 ;   22.9; 0;   31.9;    0;26.3; 0
+20220107 ;0.1;   0;   ; 5 ;   ; 5 ;   23.3; 0;   31.7;    0;26.9; 0
+20220108 ;7.4;   0;   ; 5 ;   ; 5 ;   22.5; 0;   31.1;    0;25.9; 0
+20220109 ;3.8;   0;   ; 5 ;   ; 5 ;   22.2; 0;   26.7;    0;24.6; 0
+20220110 ;0.5;   0;   ; 5 ;   ; 5 ;   22.2; 0;   32.1;    0;26.1; 0
+20220111 ;16.6;255 ;   ; 5 ;   ; 5 ;  22.4; 255; 30.7; 255 ;25.7; 255
+20220112 ;0.0; 255 ;   ; 5 ;   ; 5 ;  23.5; 255; 30.5; 255 ;25.3; 255
+20220113 ;38.3;255 ;   ; 5 ;   ; 5 ;  21.2; 255; 32.1; 255 ;25.7; 255
+20220114 ;0.8; 255 ;   ; 5 ;   ; 5 ;  22.1; 255; 32.9; 255 ;25.6; 255
+20220115 ;1.4; 255 ;   ; 5 ;   ; 5 ;  22.2; 255; 32.8; 255 ;25.8; 255
+20220116 ;29.0;255 ;   ; 5 ;   ; 5 ;  21.3; 255; 30.6; 255 ;25.4; 255
+20220117 ;12.4;255 ;   ; 5 ;   ; 5 ;  22.0; 255; 31.7; 255 ;26.3; 255
+20220118 ;41.1;255 ;   ; 5 ;   ; 5 ;  22.6; 255; 28.7; 255 ;24.9; 255
+20220119 ;5.0; 255 ;   ; 5 ;   ; 5 ;  22.0; 255; 32.7; 255 ;25.5; 255
+20220120 ;19.4;255 ;   ; 5 ;   ; 5 ;  22.1; 255; 33.3; 255 ;26.8; 255
+20220121 ;0.0; 255 ;   ; 5 ;   ; 5 ;  22.7; 255; 33.9; 255 ;26.9; 255
+20220122 ;4.0; 255 ;   ; 5 ;   ; 5 ;  22.4; 255; 33.9; 255 ;27.3; 255
+20220123 ;   ; 255 ;   ; 5 ;   ; 5 ;      ; 255;     ; 255 ;    ; 255
+20220124 ;1.2; 255 ;   ; 5 ;   ; 5 ;  23.2; 255; 33.5; 255 ;26.1; 255
+20220125 ;25.1;255 ;   ; 5 ;   ; 5 ;  24.2; 255; 33.5; 255 ;26.6; 255
+20220126 ;25.2;255 ;   ; 5 ;   ; 5 ;  23.9; 255; 33.6; 255 ;26.8; 255
+20220127 ;4.0; 255 ;   ; 5 ;   ; 5 ;  23.8; 255; 30.6; 255 ;25.7; 255
+20220128 ;4.1;255 ;   ; 5 ;   ; 5 ;  23.7; 255; 30.3; 255 ;25.2; 255
+20220129 ;27.7;255 ;   ; 5 ;   ; 5 ;  22.9; 255; 26.9; 255 ;24.4; 255
+20220130 ;    ;255 ;   ; 5 ;   ; 5 ;      ; 255;     ; 255 ;    ; 255
+20220131 ;1.4; 255 ;   ; 5 ;   ; 5 ;  23.5; 255; 31.9; 255 ;26.3; 255
+/

@@ -1,0 +1,5 @@
+#####################################################################
+#       Compilation parameters for gfortran 
+#####################################################################
+F90=gfortran -ffree-form  -g -ffpe-trap='invalid','zero','overflow'
+DOUBLE_PRECISION = -fdefault-real-8     # GFORTRAN #DOUBLE_PRECISION = -r8

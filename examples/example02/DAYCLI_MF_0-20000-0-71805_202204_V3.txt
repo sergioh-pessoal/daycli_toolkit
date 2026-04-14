@@ -1,0 +1,48 @@
+﻿&SECTION1
+CENTER=85            !<-Identification of Originating/Generating center (See commom code table C1 and C11 )
+SUBCENTER=0       !<-Sub-center of generating center (See common code C12)
+/
+! Note: space   <- Missing value
+
+!-------------------------
+! Location identification 
+!-------------------------
+&STATION_ID
+LATITUDE=46.4598
+LONGITUDE=-56.1075
+WIGOS=0-20000-0-71805 ! SAINT-PIERRE
+WMO=71805
+HTEMP=2                  ! Hight of temperature sensor
+HA= 21                       ! 007030-HEIGHT OF STATION GROUND ABOVE MEAN SEA LEVEL
+SMC_TEMP=          ! 008095-SITING AND MEASUREMENT QUALITY CLASSFICATION FOR TEMPERATURE
+SMC_PREC=          ! 008096-SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR PRECIPITATION
+METHOD_TM=3        ! 008094-Method used to calculate the average daily temperature
+TIME_OFFSET=-240 ! Time difference in minutes:  Local Meteorological Time Zone - UTC (LMTZ-UTC)
+                                  ! Use 0 in case of the use of UTC values
+/ 
+
+!----------------------------------------------------------------------------------
+! Note: In this text file, Each parameter is identified by the followed Acronyms:
+! parameter = name, unit, scale!  rr = Total Acumulate Precipitation, Kg m-2 (= mm), 1!  fsd = Fresh snow depth, m, 2!  tsd= Total snow depth, m, 2!  tn = Minimum temperature, K, 2!  tx = Maximum temperature, K, 2!  tm = Mean temperature, K, 2!
+!  The quality flag for each respective parameter above are identified by:
+!  qrr, qfsd, qtsd,qtn,qtx,qtm
+!
+!  The value of quality flag are:
+!   0 = Data checked and declared good;
+!   1 = Data checked and declared suspect;
+!   2 = Data checked and declared aggregated;
+!   3 = Data checked and declared out of instrument range;
+!   4 = Data checked, declared aggregated, and out of instrument range;
+!   5 = Parameter is not measured at the station;
+!   6 = Daily value not provided;
+!   7 = Data unchecked,
+!   8-254 = Reserved;
+!---------------------------------------------------------------------------------
+&DATA_SECTION
+!rdate= Reference date and time in LMTZ / Attribution Day
+!intertval = time interval for next variable
+!rdate  ; interval;tsd; qtsd; interval; rr; qrr; interval;fsd; qfsd; interval; tx;  qtx; interval; tn; qtn;  interval; tm; qtm
+20220401;20220401T0600; 15.5;   ; 20220401T1801-20220402T1800;   0;   7;  20220401T1801-20220402T1800; 0;    7; 20220401T0601-20220402T0600;273.35;   0; 20220401T0601-20220402T0600;278.95; 0; 20220401T1801-20220402T1800; 275.05;   0
+
+/
+
