@@ -1,3 +1,11 @@
+!-----------------------------------------------------------------------------|
+!                                        mdaycli                              |
+!-----------------------------------------------------------------------------|
+! Module for processing and storing decoded daycli information.               |
+!                                                                             |
+! sergio.ferreira@inpe.br                                                     |
+!------------------------------------------------------------------------------
+!
 module mdaycli
  use mbufr, only : undef, sec1type
  use stringflib
@@ -9,8 +17,6 @@ module mdaycli
     integer::W3
     character(len=17)::W4
  end type
-
-
 
 
  type VarId
@@ -90,29 +96,20 @@ module mdaycli
  type(daycli_var),dimension(6):: ddata
  private a,cr
 
-!   rr  ! Total Acumulate Precipitation
+!----------------------------------------
+!  rr = Total Acumulate Precipitation
 !  tsd= Total Snow deph
 !  tn = Minimum temperature
 !  tx = Maximum temperature
 !  tm = Mean temparature
+!----------------------------------------
  contains
- !
- ! WIGOS Identifier ="n-nnnnn-nnnnn-cccccccccccccccc"
- !
- function get_wigos(wigos); character(len=30)::get_wigos
-    type(wigosid), intent (in)::wigos
-    character(len=30)::aux
-    character(len=5)::W1,W2,W3
-    w1=strs(wigos%w1)
-    w2=strs(wigos%w2)
-    w3=strs(wigos%w3)
-    aux=trim(w1)//"-"//trim(w2)//"-"//trim(w3)//"-"//trim(wigos%w4)
-    get_wigos=aux
- end function
 
- !------------------------
- ! mdaycli Initialization
- !------------------------
+
+ !------------------------------------------------------
+ ! init_mdaycli - Initialises this module.
+ ! (Inicializing variables to receive daycli information)
+ !------------------------------------------------------
  subroutine init_mdaycli
 
   var(1)%d=001001 !-WMO BLOCK NUMBER (NUMERIC)
@@ -135,16 +132,7 @@ module mdaycli
   var(18)%d=004003! -DAY (D)
   var(19)%d=004004! -HOUR (H)
   var(20)%d=004005! -MINUTE (MIN)
-  !              0.00000 #    25)  204008-ADD ASSOCIATED FIELD
-  !              5.00000 #    26)  031021-ASSOCIATED FIELD SIGNIFICANCE (CODE TABLE)
-  !              5.00000 #    27)  999999-PARAMETER IS NOT MEASURED AT THE STATION <- VALUE OF THE ASSOCIATED FIELD
-  !                 Null #    28)  013013-TOTAL SNOW DEPTH (M)
-  !              0.00000 #    29)  204000-ADD ASSOCIATED FIELD
-  !             41.00000 #    30)  008028-PERIOD OVER WHICH THE DAILY MEASUREMENT IS MADE (LMTZ) <- EXTENDED TIME SIGNIFICANCE (CODE
-  !           2021.00000 #    31) *004001-YEAR (A)
-  !             12.00000 #    32)  004002-MONTH (MON)
-  !             31.00000 #    33)  004003-DAY (D)
-  !             12.00000 #    34) *004004-HOUR (H)
+
   rd%defined=.false.
   vdt%defined=.false.
   vdt1%defined=.false.
@@ -161,6 +149,19 @@ module mdaycli
 end subroutine
 
 
+ !------------------------------------------------------------------------
+ ! get_wigos | It writes wigos id i  format  "n-nnnnn-nnnnn-cccccccccccccccc"
+ !-------------------------------------------------------------------------
+ function get_wigos(wigos); character(len=30)::get_wigos
+    type(wigosid), intent (in)::wigos
+    character(len=30)::aux
+    character(len=5)::W1,W2,W3
+    w1=strs(wigos%w1)
+    w2=strs(wigos%w2)
+    w3=strs(wigos%w3)
+    aux=trim(w1)//"-"//trim(w2)//"-"//trim(w3)//"-"//trim(wigos%w4)
+    get_wigos=aux
+ end function
 !---------------------------------------------------------------------------------------!
 ! Receive a descritor d , the corresponded value  'v' and the current timeSignificance !                                                                         !
 ! Acoording descriptor and time siginificance, set the respective date parameter
@@ -365,16 +366,6 @@ subroutine write_line2(un,sec1,line)
       write(un,'(a)')'!  The quality flag for each respective parameter above are identified by:'
       write(un,'(a)')'!  qrr, qfsd, qtsd,qtn,qtx,qtm'
       write(un,'(a)')'!'
-      write(un,'(a)')'!  The value of quality flag are:'
-      write(un,'(a)')'!   0 = Data checked and declared good;'
-      write(un,'(a)')'!   1 = Data checked and declared suspect;'
-      write(un,'(a)')'!   2 = Data checked and declared aggregated;'
-      write(un,'(a)')'!   3 = Data checked and declared out of instrument range;'
-      write(un,'(a)')'!   4 = Data checked, declared aggregated, and out of instrument range;'
-      write(un,'(a)')'!   5 = Parameter is not measured at the station;'
-      write(un,'(a)')'!   6 = Daily value not provided;'
-      write(un,'(a)')'!   7 = Data unchecked,'
-      write(un,'(a)')'!   8-254 = Reserved;'
       write(un,'(a)')'!---------------------------------------------------------------------------------'
       write(un,'(a)')'&DATA_SECTION'
       write(un,'(a)')'!rdate= Reference date and time in LMTZ / Attribution Day'

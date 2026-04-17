@@ -1,29 +1,22 @@
 program daycli_decoder
 !------------------------------------------------------------------------------!
-!BUFR2CSV| DECODIFICA DADOS EM FORMATO BUFR                             | CPTEC|
+!DAYCLI_DECODER| DECODES DATA IN BUFR FORMAT                             |INPE |
 !------------------------------------------------------------------------------|
-!                                                                              !
-! THIS PROGRAM READ BUFR FILES OF OBSERVATION DATA                             !
-! AND WRITES THE DATA AND DESCRIPTORS IN AN EXCEL COMPATIBLE ASCII FILE        !
-! Este programa le um arquivo bufr de dados observacionais                     !
-! e lista os descritores e dados correspondentes em uma tabela                 !
 !                                                                              |
-! Lucas Moreira de Araujo Gonçalves (LMAG)                                     !
-! Sergio H. S. Ferreira (SHSF)                                                                             !
+! THIS PROGRAM READ BUFR FILES OF DAYCLI DATA (Template 307095 )               |
+! AND WRITES THE DATA IN A TEXT FILE  (Format 2) used by daycli_coder2         |
+!                                                                              |
+! Sergio H. S. Ferreira (SHSF)     (sergio.ferreira@inpe.br)                   |
+!------------------------------------------------------------------------------|
+!Dependencies : MBUFR-ADT,STRINGFLIB,MDAYCLI                                   |
 !------------------------------------------------------------------------------!
-!DEPENDENCIAS: MBUFR-ADT                                                       !
-!------------------------------------------------------------------------------!
-!Historico 
-!  25/08/2015 SHSF. Atualizado comando de escrita para compatibilizacao com novas
-!                   vercoes do fortran. Utilizando get_name_mbufr para obter nome
-!                   das variaveis BUFR
+!History
+!  2025 SHSF. Version 2.0
 !                     
-!  2019  -          This program was converted in a program for deconde in .cvs 
-!                   format 
  USE mbufr
  use stringflib
  use mdaycli
- !USE msflib  ! FOR USE WITH MICROSOFT POWER STATION/Para compilacao em Windows ( Microsoft Power Station )
+ !USE msflib  ! FOR USE WITH MICROSOFT POWER STATION
  implicit none
 
 !{ Declaracao das variaveis utilizadas em read_mbufr 
@@ -85,15 +78,9 @@ program daycli_decoder
 	Call READ_MBUFR(1,sec1,sec3,sec4, bUFR_ED, NBYTES,err)
 
 	If ((NBYTES > 0).and.(IOERR(1)==0)) Then
-		!print *,"Center=",sec1%center
-		!print *,"Type/Subtype=",sec1%bType,sec1%bsubtype
-		!print *,"nsubsets=",sec3%nsubsets
-		!print *,"sec3 ndesc=",sec3%ndesc
+
+      !{ Check if it is a DAYCLI MESSAGE
 		exists=.false.
-
-
-		!{ Check if it is a DAYCLI MESSAGE
-
 		do i=1,sec3%ndesc
           if (sec3%d(i)==307095) then
             exists=.true.
@@ -110,7 +97,7 @@ program daycli_decoder
           print *,":DAYCLI_DECODES:Decoding DAYCLI message n=",nm
           print *,":DAYCLI_DECODES:Decoding DAYCLI n.subsets=",nsubsets
         end if
-        !}
+       !}
 
         !--------------------------
         ! Decoding a daycli message
@@ -196,7 +183,7 @@ program daycli_decoder
                   if ((sec4%d(v,s)>4000).and.(sec4%d(v,s)<4006)) then
 
                    ! checking missing date values.
-                   ! Missing date  is possible in case of variable not provided by station
+                   ! Missing date is possible in case of variable not provided by station
                    !{
                     if (sec4%r(v,s)<0) then
                       auxi=0

@@ -1,34 +1,32 @@
-﻿&SECTION1
-CENTER=85            !<-Identification of Originating/Generating center (See commom code table C1 and C11 )  
-SUBCENTER=0                           !<-Sub-center of generating center (See common code C12)
+&SECTION1
+CENTER= 85     !<-Identification of Originating/Generating center (See commom code table C1 and C11 )
+SUBCENTER=  0  !<-Sub-center of generating center (See common code C12)
 /
 ! Note: space    <- Missing value
-
 !-------------------------
-! Location identification 
+! Location identification
 !-------------------------
 &STATION_ID
-LATITUDE=46.4598
-LONGITUDE=-56.1075
-WIGOS=0-20000-0-71805 ! SAINT-PIERRE
+LATITUDE=  46.45980
+LONGITUDE= -56.10750
+WIGOS=0-20000-0-71805  ! SAINT-PIERRE
 WMO=71805
-HTEMP=2                  ! Hight of temperature sensor
-HA= 21                       ! 007030-HEIGHT OF STATION GROUND ABOVE MEAN SEA LEVEL
-SMC_TEMP=             ! 008095-SITING AND MEASUREMENT QUALITY CLASSFICATION FOR TEMPERATURE
-SMC_PREC=             ! 008096-SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR PRECIPITATION
-METHOD_TM=3        ! 008094-Method used to calculate the average daily temperature
-TIME_OFFSET=-240 ! Time difference in minutes:  Local Meteorological Time Zone - UTC (LMTZ-UTC)
-                                  ! Use 0 in case of the use of UTC values
-/ 
-
+HTEMP=  2 ! Hight of temperature sensor
+HA= 21    ! 007030-HEIGHT OF STATION GROUND ABOVE MEAN SEA LEVEL
+SMC_TEMP= ! 008095-SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR TEMPERATURE(CODE TABLE)                                                                                                                                                                            
+SMC_PREC= ! 008096-SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR PRECIPITATION (CODE TABLE)                                                                                                                                                                         
+METHOD_TM=    3 ! 008094-Method used to calculate the average daily temperature                                                                                                                                                                                               
+TIME_OFFSET=-240! Time difference in minutes:  Local Meteorological Time Zone - UTC (LMTZ-UTC)                                                                                                                                                                                 
+                ! Use 0 in case of the use of UTC values
+/
 !----------------------------------------------------------------------------------
 ! Note: In this text file, Each parameter is identified by the followed Acronyms:
 ! parameter = name, unit, scale
 !  rr = Total Acumulate Precipitation, Kg m-2 (= mm), 1
 !  fsd = Fresh snow depth, m, 2
 !  tsd= Total snow depth, m, 2
-!  tn = Minimum temperature, K, 2
 !  tx = Maximum temperature, K, 2
+!  tn = Minimum temperature, K, 2
 !  tm = Mean temperature, K, 2
 !  The quality flag for each respective parameter above are identified by:
 !  qrr, qfsd, qtsd,qtn,qtx,qtm
