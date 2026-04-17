@@ -59,7 +59,6 @@ program daycli_decoder
   integer :: ilocal_table
   integer :: x,a
   logical :: exists
-  logical :: optional_xml
   real                                ::null  ! Valor indefinido 
 !}
 
@@ -68,16 +67,12 @@ program daycli_decoder
     call init_mdaycli
 	NBYTES = 0
 	open(2,file=outfile,status='unknown')
-	print *,outfile
-	if (index(ucases(outfile),"XML")>0) then
-	  call write_xml_header(2)
-	  optional_xml=.true.
-    else
-       optional_xml=.false.
-    end if
 
 	Call OPEN_MBUFR(1, infile)
-	!open(3,file=outfile,status="unknown")
+
+	print *,":DAYCLI_DECODER:Input BUFR file=",trim(infile)
+	print *,":DAYCLI_DECODER:Output file=",trim(outfile)
+
 	nm=0
 	father_code=0
 	first_son_code=0
@@ -90,13 +85,12 @@ program daycli_decoder
 	Call READ_MBUFR(1,sec1,sec3,sec4, bUFR_ED, NBYTES,err)
 
 	If ((NBYTES > 0).and.(IOERR(1)==0)) Then
-		print *,"Center=",sec1%center
-		print *,"Type/Subtype=",sec1%bType,sec1%bsubtype
-		print *,"nsubsets=",sec3%nsubsets
-		print *,"sec3 ndesc=",sec3%ndesc
+		!print *,"Center=",sec1%center
+		!print *,"Type/Subtype=",sec1%bType,sec1%bsubtype
+		!print *,"nsubsets=",sec3%nsubsets
+		!print *,"sec3 ndesc=",sec3%ndesc
 		exists=.false.
 
-		if (optional_xml) call writesec1_xml(2,sec1)
 
 		!{ Check if it is a DAYCLI MESSAGE
 
@@ -106,14 +100,15 @@ program daycli_decoder
             exit
           end if
         end do
-       print *, "Decoding DAYCLI messages:  Template 307095"
+
         if (.not.exists ) then
+          print *, ":DAYCLI_DECODES: Looking for DAYCLI messages: Template 307095"
           goto 10
         else
           nm=nm+1
           nsubsets=sec3%nsubsets
-          print *,"Decoding DAYCLI message n=",nm
-          print *,"Decoding DAYCLI n.subsets=",nsubsets
+          print *,":DAYCLI_DECODES:Decoding DAYCLI message n=",nm
+          print *,":DAYCLI_DECODES:Decoding DAYCLI n.subsets=",nsubsets
         end if
         !}
 
@@ -121,6 +116,7 @@ program daycli_decoder
         ! Decoding a daycli message
         ! -------------------------
         ! outer loop (subsets) {
+
         WIGOS_CUR%W3=0
 		do s=1,nsubsets
             WIGOS%W4=""
@@ -132,7 +128,7 @@ program daycli_decoder
              !{ cases
              select case(sec4%d(v,s))
 
-             case(001125)
+            case(001125) !WIGOS IDENTIFIER SERIES (NUMERIC)
                 WIGOS%W1=sec4%r(v,s)
 
              case(001126) !WIGOS ISSUER OF IDENTIFIER    (NUMERIC)
@@ -169,10 +165,13 @@ program daycli_decoder
               line%method_tm=int(sec4%r(v,s))
              case(008028) ! SET EXTENDED TIME SIGNIFICANCE
                  timeSignificance=sec4%r(v,s)
-                 rd%defined=.false.
-                 vdt%defined=.false.
-                 vdt1%defined=.false.
-                 vdt2%defined=.false.
+
+                 !{ initialization of reference date (rd) and time windows (vdt, vdt1, vdt2)
+                   rd%defined=.false.
+                   vdt%defined=.false.
+                   vdt1%defined=.false.
+                   vdt2%defined=.false.
+                 !}
              case(008023)
                 if (sec4%r(v,s)>=0) then
                   FO_STATISTIC=int(sec4%r(v,s))
@@ -192,29 +191,41 @@ program daycli_decoder
                 line%lmtz_utc=sec4%r(v,s)
              end select
 
-             !{ Date and time  set vdt1,vdt2 and rd
+             !{ Date and time: set or cancel vdt1,vdt2 and rd
               if (timeSignificance>0) then
                   if ((sec4%d(v,s)>4000).and.(sec4%d(v,s)<4006)) then
+
+                   ! checking missing date values.
+                   ! Missing date  is possible in case of variable not provided by station
+                   !{
                     if (sec4%r(v,s)<0) then
                       auxi=0
-                      print *, "Warning = Missing data value"
                     else
                       auxi=int(sec4%r(v,s))
                     end if
+                    !}
+
                     call set_daycli_DateTime(sec4%d(v,s),auxi,timeSignificance)
                     if (timeSignificance==40) line%rd=rd
-                   else
+
+                else
                     vdt1%defined=.false.
                     vdt2%defined=.false.
-                  end if
+                end if
               endif
               !}
-               !  1 rr = Total Acumulate Precipitation
-               !  2 ds = Fresh snow
-               !  3 tsd= Total Snow deph
-               !  4 tx = Maximum temperature
-               !  5 tn = Minimum temperature
-               !  6 tm = Mean temparature
+               !-----------------------------------------------------
+               !Getting variables and time widowns from the template
+               !---------------------------------------------------
+               !  x | Variables
+               !----+-----------------------------------------------
+               !  1 |rr = Total Acumulate Precipitation
+               !  2 |ds = Fresh snow
+               !  3 |tsd= Total Snow deph
+               !  4 |tx = Maximum temperature
+               !  5 |tn = Minimum temperature
+               !  6 |tm = Mean temparature
+               !----+-----------------------------------------------
               do x =1,3
                 if (sec4%d(v,s)==ddata(x)%d) then
                   ddata(x)%val=sec4%r(v,s)
@@ -224,6 +235,7 @@ program daycli_decoder
                   if (timeSignificance==41)ddata(x)%t2=vdt2
                 end if
               end do
+
               if (sec4%d(v,s)==ddata(4)%d) then
                 if(FO_STATISTIC==minimum) x=5
                 if(FO_STATISTIC==maximum) x=4
@@ -235,24 +247,22 @@ program daycli_decoder
                 if (timeSignificance==41)ddata(x)%t2=vdt2
               end if
 
-            end do ! End of inerloop
+            end do !} End of inerloop  (variables)
 			!}
 			!line%tsd=ddata(1)
 			line%ddata=ddata
-			if (optional_xml ) then
-                call write_xml(2,line)
-            else
-                call write_line2(2,sec1,line)
-            end if
-		end do
+
+            call write_line2(2,sec1,line)
+
+		end do !} Outer loop (subset)
 
 
 		deallocate(sec3%d,sec4%r,sec4%d,sec4%c)
 		goto 10
 	end if
- if (optional_xml) call close_xml(2)
  close(2)
  call Close_mbufr (1)
+ print *,":DAYCLI_DECODES:Done"
 
 !}
 stop
@@ -292,19 +302,21 @@ subroutine welcome(infile,outfile)
 
    end do
 
- if ((x1*X2)==0) then
   print *,"+---------------------------------------------------------------------+"
   print *,"| INPE DAYCLI_DECODER: decode DAYCLI messages in BUFR4 (3-07-095)     |"
   print *,"| Autor: sergio.ferreira@inpe.br - Version 2.0 2025                   |"
   print *,"| Include MBUFR-ADT module ",MBUFR_VERSION,"                  |"
+
+ if ((x1*X2)==0) then
   print *,"+---------------------------------------------------------------------+"
   print *,"| use daycli_decoder -i <infile> -o <outfile>                         |"
   print *,"|   infile:= input bufr file name                                     |"
   print *,"|   outfile:= outpur file name (txt)                                  |"
   print *,"|                                                                     |"
   print *,"+---------------------------------------------------------------------+"
-
 	stop
+ else
+  print *,"+---------------------------------------------------------------------+"
    end if
 end subroutine
 

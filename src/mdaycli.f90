@@ -1,7 +1,6 @@
 module mdaycli
  use mbufr, only : undef, sec1type
  use stringflib
- use xmlparse
  implicit none
  public
  type WIGOSID
@@ -111,8 +110,11 @@ module mdaycli
     get_wigos=aux
  end function
 
+ !------------------------
+ ! mdaycli Initialization
+ !------------------------
  subroutine init_mdaycli
-  print *,"mdaycli has been initialized"
+
   var(1)%d=001001 !-WMO BLOCK NUMBER (NUMERIC)
   var(2)%d=001002 !-WMO STATION NUMBER (NUMERIC)
   var(3)%d=005001 !-LATITUDE (HIGH ACCURACY) (DEG)
@@ -406,150 +408,9 @@ subroutine write_line2(un,sec1,line)
 
 
 end subroutine
-!-----------------------------------------------------------------------------!
-!                                                                             !
-!                                                                             !
-!-----------------------------------------------------------------------------!
-subroutine write_xml(un,subset)
-   integer,intent(in)::un
-   type(daycli_data),intent(in)::subset
-   character(len=255)::auxc
-   integer::x
-   character(len=1),parameter::a='"'
-   character(len=1),parameter::cr=char(13)
-   auxc=trim(strs(subset%wigos%w1))//"-"//trim(strs(subset%wigos%w2))//"-"//trim(strs(subset%wigos%w3))//"-"//subset%wigos%w4
-   write(un,'(2x,a)')"<subset>"//cr
-   write(un,'(4x,a)')"<weather_station"//cr
-   write(un,'(6x,a)')"WIGOS="//a//trim(auxc)//a//cr
-   write(auxc,'(a1,i2.2,i3.3,a1)')a,subset%wmo%sblock,subset%wmo%snumber,a
-   write(un,'(6x,a)')"WMO="//trim(auxc)//cr
-   write(un,'(6x,"Latitude=",a1,f10.5,a2)')a,subset%latitude,a//cr
-   write(un,'(6x,"Longitude=",a1,f10.5,a2)')a,subset%longitude,a//cr
-   write(un,'(6x,"ha=",a1,f7.2,a2)')a,subset%ha,a//cr
-   write(un,'(6x,"htemp=",a1,f7.2,a2)')a,subset%htemp,a//cr
-   write(un,'(6x,"SMC_TEMP=",a1,i3.3,a2)') a,subset%SMC_TEMP,a//cr
-   write(un,'(6x,"SMC_PREC=",a1,i3.3,a2)') a,subset%SMC_PREC,a//cr
-   write(un,'(6x,"METHOD_TM=",a1,I3.3,a1,"/>",a1)') a,subset%METHOD_TM,a,cr
-   write(un,901)a,subset%lmtz_utc,a,a,subset%rd%year,subset%rd%month,subset%rd%day,a,cr
-901 format(4x,"<Reference_date time_difference=",a1,I3.3,a1," date=",a1,i4.4,2i2.2,a1,"/>",a1)
-   do x=1,6
-
-      if (((subset%ddata(x)%val==undef()).and.(subset%ddata(x)%qc==255))) goto 300
-         write(un,'(4x,a)')"<element name="//a//trim(subset%ddata(x)%varname)//a//cr
-         write(un,'(6x,a)')"fullname="//a//trim(subset%ddata(x)%fullname)//a//cr
-         write(un,'(6x,a)')"unit="//a//trim(subset%ddata(x)%unit)//a//cr
-         write(un,'(6x,a)')trim(write_datetime_xml(subset%ddata(x)))
-         if (subset%ddata(x)%qc==255) then
-            auxc="quality="//a//"null"//a//">"
-         else
-            auxc="quality="//a//trim(strs(subset%ddata(x)%qc))//a//">"
-         end if
-
-         if (line%ddata(x)%val==undef()) then
-            write(un,'(6x,a)')trim(auxc)//"</element>"//cr
-         else
-            write(un,'(6x,a,f7.2,"</element>",a1)')trim(auxc),line%ddata(x)%val,cr
-         end if
 
 
-    300 continue
-   end do
 
- write(un,'(2x,a)')"</subset>"//cr
-end subroutine
-
-!-----------------------------------------------------------------------------!
-!                                                                             !
-!                                                                             !
-!-----------------------------------------------------------------------------!
-subroutine close_xml(un)
- integer,intent(in)::un
- write(un,'(2x,a)')"</daycli>"//cr
-  print *,"Daycli Ok"
-end subroutine
-
-!-----------------------------------------------------------------------------!
-!                                                                             !
-!                                                                             !
-!-----------------------------------------------------------------------------!
-subroutine write_xml_header(un)
- integer,intent(in)::un
- print *,"OPTIONS: dataout in xml"
- write(2,'(a)') '<?xml version="1.0"?>'
- write(2,'(3x,a)') '<!-- Identification of Originating/Generating center (See commom code table C1 and C11 )-->'
- write(2,'(3x,a)') '<!-- Sub-center of generating center (See common code C12)-->'
- write(2,'(3x,a)') '<!-- HTEMP        !Highr of temperature sensor'
- write(2,'(6x,a)') 'HA=          !007030-HEIGHT OF STATION GROUND ABOVE MEAN SEA LEVEL'
- write(2,'(6x,a)') 'SMC_TEMP     !008095-SITING AND MEASUREMENT QUALITY CLASSFICATION FOR TEMPERATURE'
- write(2,'(6x,a)') 'SMC_PREC     !008096-SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR PRECIPITAION'
- write(2,'(6x,a)') 'METHOD_TM    !008094-Method used to calculate the average daily temperature'
- write(2,'(9x,a)') 'time_difference !Time difference in minutes:  Local Meteorologica Time Zone - UTC (LMTZ-UTC)'
- write(2,'(6x,a)') '!Use 0 in case of the use of UTC values'
- write(2,'(6x,a)') '-->'
-end subroutine
-
-!-----------------------------------------------------------------------------!
-!                                                                             !
-!                                                                             !
-!-----------------------------------------------------------------------------!
-subroutine writesec1_xml(un,sec1)
- integer,intent(in)::un
- type(sec1type),intent(in)::sec1
- write(un,'(2x,a)')"<daycli>"
- write(un,11)sec1%center,sec1%subcenter,sec1%year,sec1%month
- 11 format(2x,'<sec1 center="',i3,'" subcenter="',i3,'" year="',i4.4,'" month="',I2.2,'" day="0" />')
- print *,sec1%center
-end subroutine
-
-!-----------------------------------------------------------------------------!
-!                                                                             !
-!                                                                             !
-!-----------------------------------------------------------------------------!
-function write_datetime_xml(var); character(len=255)::write_datetime_xml
-   type(daycli_var),intent(in)::var
-   integer::y1,m1,d1,h1,n1
-   integer::y2,m2,d2,h2,n2
-   character(len=1),parameter::a='"'
-   if (var%t1%year==0) then
-     if (var%TimeSignificance==41) then
-      write_datetime_xml="period="//a//"null"//a
-       return
-     elseif (var%TimeSignificance==42 )then
-       write_datetime_xml="time="//a//"null"//a
-       return
-     else
-       write_datetime_xml=""
-     end if
-   end if
-   if (var%TimeSignificance==41) then
-      y1=var%t1%year
-      m1=var%t1%month
-      d1=var%t1%day
-      h1=var%t1%hour
-      n1=var%t1%minute
-      y2=var%t2%year
-      m2=var%t2%month
-      d2=var%t2%day
-      h2=var%t2%hour
-      n2=var%t2%minute
-      write(write_datetime_xml,100)a,y1,m1,d1,h1,n1,y2,m2,d2,h2,n2,a
-   elseif(var%TimeSignificance==42) then
-      y1=var%t1%year
-      m1=var%t1%month
-      d1=var%t1%day
-      h1=var%t1%hour
-      n1=var%t1%minute
-       write(write_datetime_xml,101)a,y1,m1,d1,h1,n1,a
-   else
-      y1=var%t1%year
-      m1=var%t1%month
-      d1=var%t1%day
-       write(write_datetime_xml,102)y1,m1,d1
-   end if
- 100 format ("period=",a1,i4.4,2i2.2,"T",2I2.2,"-",i4.4,2i2.2,"T",2I2.2,a1)
- 101 format ("time=",a1,i4.4,2i2.2,"T",2I2.2,a1)
- 102 format (i4.4,2i2.2)
-end function
 
 !-----------------------------------------------------------------------------!
 ! function                                                                    !

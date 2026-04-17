@@ -24,7 +24,6 @@ MAIN1         =$(SRC)/daycli_encoder1.f90
 MAIN2         =$(SRC)/daycli_encoder2.f90
 DECODER       =$(SRC)/daycli_decoder.f90
 MDAYCLI       =$(SRC)/mdaycli.f90
-DECODER       =$(SRC)/daycli_decoder.f90
 # ----------------------
 # MBUFRTOOLS programs 
 #----------------------
@@ -63,7 +62,7 @@ BUFRSPLIT    =  $(DIRBIN)/bufrsplit
 # COMPILATION
 #-------------
 
-all:$(DAYCLI_ENCODER1) $(DAYCLI_ENCODER2) $(DAYCLI_DECODER)$(BUFRDUMP) $(BUFRGEN) $(BUFRLIST) $(BUFRTIME) $(BUFRSPLIT)
+all:$(DAYCLI_ENCODER1) $(DAYCLI_ENCODER2) $(DAYCLI_DECODER) $(BUFRDUMP) $(BUFRGEN) $(BUFRLIST) $(BUFRTIME) $(BUFRSPLIT)
 $(DAYCLI_ENCODER1) : $(MAIN1) mbufr.o stringflib.o  datelib.o
 	mkdir -p $(DIRBIN)
 	$(F90)  -o $@ $(MAIN1) mbufr.o stringflib.o  datelib.o
@@ -72,6 +71,7 @@ $(DAYCLI_ENCODER2) : $(MAIN2) mbufr.o stringflib.o  datelib.o
 	$(F90)  -o $@ $(MAIN2) mbufr.o stringflib.o datelib.o
 $(DAYCLI_DECODER) : $(DECODER) mbufr.o stringflib.o mdaycli.o
 	mkdir -p $(DIRBIN)
+	$(F90)  -o $@ $(DECODER) mbufr.o stringflib.o mdaycli.o
 #-------------
 # Basic tools 
 #-------------
