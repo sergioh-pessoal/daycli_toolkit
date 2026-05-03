@@ -1,7 +1,7 @@
 DAYCLI_TOOLKIT
 ==========
 
-The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**). In the present version There are two possibility of input data formats: The data format of daycli_encoder1 can be use to encode observations whose are performed at fixed and consistent times throughout the year. The data format of daycli_endoder2 can be use to encode data whose observation times may vary during the year.  
+The DAYCLI_TOOLKIT was developed in Fortran at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**). In the present version There are two possibility of input data formats: The data format of daycli_encoder1 can be use to encode observations whose are performed at fixed and consistent times throughout the year. The data format of daycli_endoder2 can be use to encode data whose observation times may vary during the year.  
 
 **Notes:**
 
@@ -12,7 +12,7 @@ The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space R
 
 1- Requirements: 
 ---------
- - A fortran 90 compiler. For example, gfortran, g95, ifort, pgf90, etc. 
+ - A fortran 90 compiler or Higher. For example, gfortran, g95, ifort, pgf90, etc. 
  - make commnad (linux) or nmake (windows)
 
 2 - Compilation in Linux 
@@ -40,16 +40,14 @@ In case of you are using other fortran compiler, that is not listed above, you c
 3 - Compilation in MS-Windows
 --------
 
-The daycli_toolkit was developed in linux, but it cam be compiled and used in Windowns (DOS terminal or MS-Windowns terminal). It is necessary just the instalation of the g95 fortran compiler and nmake command.  
+The daycli_toolkit was developed in linux, but it cam be compiled and used in Windowns (DOS terminal or MS-Windowns terminal). However it is necessary previous instalation of the g95 fortran compiler and nmake of the Microsoftware Visual Studio.  
 
 Type the command  bellow on DOS terminal to compile
 #
     nmake Makefile_windows 
 #
 
-Notes:
 
-1 - There are othe compilations options in Windows like using MS Visual studio. In those cases, some small modifications in the solfware are eventualy necessay.
 
 4 - Environment variables
 ---------
@@ -57,12 +55,12 @@ After compilation is necessary to set the environment **MBUFR_TABLES** in your s
 
 The procedure of setting environment variables cam be different in each system or environment. But they use to be simple and similar. 
 
-Here is a example for linux:  In the case of **bufrtables** was saved in the path **/home/user/daycli_toolkit/bufrtables**, just edit the basrc file and add the follow instruction 
+Here is a example for linux:  In the case of **bufrtables** was saved in the path **/home/user/daycli_toolkit/bufrtables**,it is necessary to edit the .bashrc file (or equivalent) in your system and add the follow instruction 
 
 # 
 export MBUFR_TABLES=/home/user/daycli_toolkit 
 #
-After the edition type on terminal the command **source ./bashrc** to update the configuration. 
+After the edition type on terminal the command **source ./bashrc** to apply changes. 
 
 5 - testing BUFR DAYCLI codification
 ---------------
