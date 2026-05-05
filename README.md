@@ -40,9 +40,9 @@ In case of you are using other fortran compiler, that is not listed above, you c
 3 - Compilation in MS-Windows
 --------
 
-The daycli_toolkit was developed in linux, but it cam be compiled and used in Windowns (DOS terminal or MS-Windowns terminal). However it is necessary previous instalation of the g95 fortran compiler and nmake of the Microsoftware Visual Studio.  
+The daycli_toolkit was developed in linux, but it can be compiled and used in Windowns (DOS terminal or MS-Windowns terminal). However it is necessary previous instalation of the g95 fortran compiler and nmake command from the Microsoftware Visual Studio.  
 
-Type the command  bellow on DOS terminal to compile
+Type the command  bellow on DOS terminal or Windows terminal to compile
 #
     nmake Makefile_windows 
 #
@@ -51,9 +51,9 @@ Type the command  bellow on DOS terminal to compile
 
 4 - Environment variables
 ---------
-After compilation is necessary to set the environment **MBUFR_TABLES** in your sistem with the path to the folder **bufrtable**  where BUFR tables are. 
+After compilation is recommended to set the environment **MBUFR_TABLES** in your system with the path to the folder where BUFR tables are. 
 
-The procedure of setting environment variables cam be different in each system or environment. But they use to be simple and similar. 
+The procedure of setting environment variables can be different in each system or environment. But they use to be simple and similar. 
 
 Here is a example for linux:  In the case of **bufrtables** was saved in the path **/home/user/daycli_toolkit/bufrtables**,it is necessary to edit the .bashrc file (or equivalent) in your system and add the follow instruction 
 
@@ -87,4 +87,61 @@ In the  ./examples/example02 directory the script  **run_example.sh** demonstrat
 6 - Input text format
 ------------
 
+The input data formats are based on “fortran namelist” format, in which groups of information are writes in a structure that starts with $GroupName and close with “/” . The initial groups contain fixed metadata information, such as the generating center and sub-center code,  Location of weather station as well as the fixed periods used in measurement of each variable. The last group, “$DATA SECTION”, is the group that Contains the actual daily climate variables and quality values, separated by semicolons (“;”).
+
+**6.1-Format 1**
+
+In case of the format1, the fixed periods used for each data, are not provided in the DATA SECTION, but provided in separated groups instead, as in the example bellow for maximum temperature.
+
+    &STIME_TX
+    HOUR=06
+    MINUTE=01
+    DT=0
+    /
+In this example Hour and minute is the fixed hour and minute used for the maximum temperature.  DT  = 0 indicate the  beginning time of the parameter period starts at the current day in LMTZ .  DT = -1  indicates that  the beginning time of the parameter period starts the previous day in LMTZ. 
+The data section contains only reference date and the sequence of measurements and quality information separated by “;” as in the example bellow
+
+    &DATA_SECTION
+    !date ;rr(mm); qrr;  ds;qds;tsd;qtsd;tn(c);qtn; tx(c);  qtx;tm(c);qtm
+    20220101 ;2.9;   0;   ; 5 ;   ; 5 ;   23.0; 0;   31.9;    0;25.9; 0
+    20220102 ;7,4;   0;   ; 5 ;   ; 5 ;   23,4; 0;   32.3;    0;26.3; 0
+    20220103 ;6.0;   0;   ; 5 ;   ; 5 ;   22.8; 0;   28.4;    0;24.7; 0
+    20220104 ;3.3;   0;   ; 5 ;   ; 5 ;   21.7; 0;   32.1;    0;25.8; 0
+    20220105 ;1.4;   0;   ; 5 ;   ; 5 ;   22.8; 0;   31.5;    0;26.4; 0
+    20220106 ;0.2;   0;   ; 5 ;   ; 5 ;   22.9; 0;   31.9;    0;26.3; 0
+    20220107 ;0.1;   0;   ; 5 ;   ; 5 ;   23.3; 0;   31.7;    0;26.9; 0
+    20220108 ;7.4;   0;   ; 5 ;   ; 5 ;   22.5; 0;   31.1;    0;25.9; 0
+    / 
+
+where rr = Total Accumulated Precipitation; ds = Fresh snow; tsd= Total Snow depth ; tn = Minimum temperature ; tx = Maximum temperature; tm = Mean temperature.
+Note:  "qrr" represents the quality flag for "rr" , "qds" is the quality flag for "ds" and so on
+The software will use the informations of fixed times and the reference data  to calculate the start time and end time necessary to encode DAYCLI in BUFR. 
+
+**Format 2**
+In case of  format 2 , the fixed period for each variable group are not provided. Insted  the reference date, the sequence of intervals, values and as quality information separated by “;” for each variables are provided in data section for each day.
+
+    $SECTION1
+    CENTER= 85     !<-Identification of Originating/Generating center
+    SUBCENTER=  0  !<-Sub-center of generating center (See common code C12)
+    /
+    ! Note: space    <- Missing value
+    !-------------------------
+    ! Location identification
+    !-------------------------
+    &STATION_ID
+    LATITUDE=  46.45980
+    LONGITUDE= -56.10750
+    WIGOS=0-20000-0-71805  ! SAINT-PIERRE
+    WMO=71805
+    HTEMP=  2 ! Hight of temperature sensor
+    HA= 21    ! 007030-HEIGHT OF STATION GROUND ABOVE MEAN SEA LEVEL
+    SMC_TEMP= ! 008095-SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR TEMPERATURE                                                                                                  
+    SMC_PREC= ! 008096-SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR PRECIPITATION (CODE TABLE)                                                                                                                                                                         
+    METHOD_TM=    3 ! 008094-Method used to calculate the average daily temperature                                                                          
+    TIME_OFFSET=-240! Time difference in minutes:  Local Meteorological Time Zone - UTC (LMTZ-UTC)                       (Note: Use 0 in case of the use of UTC values )
+/
+
+     &DATA_SECTION !!date;interval;tsd;qtsd;interval;rr;qrr;interval;fsd;qfsd;interval;txT qtx;interval;tn;qtn;interval;tm;qtm
+     20220401;20220401T0601;0;7;20220401T0601-20220402T0600;15.5;0;20220401T0601-20220402T0600;0;7;20220401T0601-20220402T0600;278.95;0; 20200331T1801-20220401T1800;273.35;0;20220401T0001-20220402T0000;275.05;0
+     20220402;20220402T0601;0;7;20220402T0601-20220403T0600;1.9;0;20220402T0601-20220403T0600;1;7;20220402T0601-20220403T0600;277.65;0;20220401T1801-20220402T1800;274.05;0;20220402T0001-20220403T0000;275.85;0
 
