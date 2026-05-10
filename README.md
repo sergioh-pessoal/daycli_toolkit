@@ -1,9 +1,11 @@
-DAYCLI_TOOLKIT
+DAYCLI_TOOLKIT (Version 1.0 )
 ==========
 
-The DAYCLI_TOOLKIT was developed in Fortran at the National Institute for Space Research (INPE) to assist in the encoding and decoding of DAYCLI BUFR messages. The **daycli_encoder95** is the main tool of the daycli_toolkit. It can be used as a technical encoding layer to convert data from national climate databases into DAYCLI BUFR messages (template 3-07-095). For its use, files in a specific text format (see item 6) need to be previously generated with valid daily climate information, quality control, and respective metadata. Another important tool is the daycli_decoder. It allows decoding a DAYCLI BUFR message back to the text format used by daycli_encoder95, allowing the opening of DAYCLI BUFR files from other centers, as well as being used as a tool for verifying encoding.
+The DAYCLI_TOOLKIT was developed in Fortran at the National Institute for Space Research (INPE) to assist in the encoding and decoding of DAYCLI BUFR messages.  The **daycli_encoder95** is the main tool of the daycli_toolkit. It uses input files in a specific text format (see item 6) that need to be generated beforehand with valid daily climate information with quality control and the corresponding metadata. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encoder95, enabling the opening of DAYCLI BUFR files from other centers, and can also be used as a tool for verifying local encoding.
+
 
 **Notes:**
+
 1 -  This software does not perform climatological calculations or quality control decisions.
 
 2- The DAYCLI messages can be decoded by any available BUFR software, as well as by the daycli_decoder and/or bufr_dump tool included in this toolkit. 
@@ -70,78 +72,92 @@ The daycli_enconder95 tool codes DAYCLI BUFR file from a text file
 
 **Basic line command**
 
-#
-    daycli_encoder95 -i *Name_of_input_text_file.txt*  -o *daycli_output_BUFR_file.bufr*
-#
+
+    daycli_encoder95 -i "Name_of_input_text_file.txt"  -o "daycli_output_BUFR_file.bufr"
+
 
 **Running the test example** 
 
-In the ./examples/example01 directory the  script **run_example.sh** demonstrates the encoding of daycli with **daycli_encoder95** as well as the decoding of daycli using two different tools: **a) daycli_decoder** (wich decodes daycli back to the text ) ; **b) bufr_dump** wich is a generic BUFR decoder suitable for all types of BUFR messages.
+In the ./examples/example_01 directory, the  script **run_example.sh** demonstrates the encoding of daycli with **daycli_encoder95** as well as the decoding of daycli using two different tools: **a) daycli_decoder** (wich decodes daycli back to the text ) ; **b) bufr_dump** wich is a generic BUFR decoder suitable for all types of BUFR messages.
 
 See and run the scripts **run_example.sh** and see the results.   
-Note: this script is a bash script for linux.  If you are using in dos windows or windows terminal some adaptations can  be necessary 
+Note: this script is a bash script for linux.  If you are using dos windows or windows terminal some adaptations can be necessary 
 
 
 6 - Input text format
 ------------
 
-The input data formats are based on “fortran namelist” format, in which groups of information are writes in a structure that starts with $GroupName and close with “/” . The initial groups contain fixed metadata information, such as the generating center and sub-center code,  Location of weather station. The last group, “$DATA SECTION”, is the group that Contains the actual daily climate variables and quality values as well as the respective reference day of each subset and time period of each paramerter, separated by semicolons (“;”).
+The input data formats are based on “fortran namelist” format, in which groups of information are writes in a structure that starts with $GroupName and close with “/” .  The first group is The "$SECTION1"  group. It contains identification of generating center / subcenter. The second group is the "$STATION_ID" which contains many fixed metadata about a weather station as in the example bellow . 
 
+SECTION 1 group
 
-In the case of format 1, the start or end time of the observation period is provided, as a fixed information relative to assined day. This information are used by the programa to calculate the  start and end time of the observaion period for each parameter for each day to then correctly codificate on DAYCLI message
-
-  Example .The example bellow is for maximum temperature (STIME_TX). In this case is indicates that  maxium temperature are mesured every day at 06:00 hour and also considated as maximum temperature of the present day
-
-    &STIME_TX
-    HOUR=06
-    MINUTE=00
-    DT=0
+    &SECTION1
+    CENTER= 85     !<-Identification of Originating/Generating 
+    SUBCENTER=  0  !<-Sub-center of generating center (See common code C12)
     /
 
-Using this informatiom the time period of maximum temperature are automaticaly calculate for each day of month are followed:
+ STATION_ID group
 
-For example:  In the case of the assined date is 20210301 (year = 2021. month =3, day =01) the program  calculates the time period for maximum temperature as been from 20210301T0600 to 20210302T0600, becouse  DT  = 0 indicates that the  beginning time of the  period starts at the current day in LMTZ and for consequence ends in the next day.  On the other hand If DT = -1 it indicates that the beginning time is in on  previous day . So in this case the period would be calculate as from 20210228T0600 to 20210301T0600.  This is the information of time period that are efetivaly code in DAYCLI message. 
+    &STATION_ID
+    LATITUDE=  46.45980
+    LONGITUDE= -56.10750
+    WIGOS=0-20000-0-71805
+    WMO=71805
+    HTEMP=  2 ! Hight of temperature sensor
+    HA= 21    ! HEIGHT OF STATION GROUND ABOVE MEAN SEA LEVEL
+    SMC_TEMP= ! SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR TEMPERATURE                                                                      
+    SMC_PREC= ! SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR PRECIPITATION                         
+    METHOD_TM= 3 !Method used to calculate the average daily temperature                                                                     
+    TIME_OFFSET=-240! Time difference in minutes:  Local Meteorological Time Zone - UTC                                                                                            
+    ! Use 0 in TIME_OFFICE in case of date and time in  UTC 
+    /
 
-Note that only the reference data (year,monuth and day) are provided in the first collum, because the time periods for each variable are automaticaly calculated to be included in DAYCLI 
+Notes
 
- 
- The example bellow shows the data_section of format1. 
+1 -  the DAYCLI template 3-07-095 allow the codification of data in the Local Meteorological Time Zone to preserve and inform the date and time of observation acoording local pratices. To inform date and time in UTC use TIME_OFFICE=0. To informat data and time in LMTZ (Local Meteorological Time Zone) use TIME_OFFICE =  Time difference in minutes (LMTZ-UTC)
 
-    &DATA_SECTION
-    !date ;rr(mm); qrr;  ds;qds;tsd;qtsd;tn(c);qtn; tx(c);  qtx;tm(c);qtm
-    20220101 ;2.9;   0;   ; 5 ;   ; 5 ;   23.0; 0;   31.9;    0;25.9; 0
-    20220102 ;7,4;   0;   ; 5 ;   ; 5 ;   23,4; 0;   32.3;    0;26.3; 0
-    20220103 ;6.0;   0;   ; 5 ;   ; 5 ;   22.8; 0;   28.4;    0;24.7; 0
-    20220104 ;3.3;   0;   ; 5 ;   ; 5 ;   21.7; 0;   32.1;    0;25.8; 0
-    20220105 ;1.4;   0;   ; 5 ;   ; 5 ;   22.8; 0;   31.5;    0;26.4; 0
-    20220106 ;0.2;   0;   ; 5 ;   ; 5 ;   22.9; 0;   31.9;    0;26.3; 0
-    20220107 ;0.1;   0;   ; 5 ;   ; 5 ;   23.3; 0;   31.7;    0;26.9; 0
-    20220108 ;7.4;   0;   ; 5 ;   ; 5 ;   22.5; 0;   31.1;    0;25.9; 0
-    / 
+The last group, “$DATA SECTION”, is the group that contains the actual daily climate variables on a table format with rows and collums separated by semicolons (“;”).  The collums are:
 
-where rr = Total Accumulated Precipitation; ds = Fresh snow; tsd= Total Snow depth ; tn = Minimum temperature ; tx = Maximum temperature; tm = Mean temperature.
-Note:  "qrr" represents the quality flag for "rr" , "qds" is the quality flag for "ds" and so on
+   **date; interval; tsd; qtsd; interval; rr; qrr; interval; fsd; qfsd; interval; tx qtx;interval;tn;qtn;interval;tm;qtm**
 
-Note that only the reference data (year,monuth and day) are provided in the first collum, because the time periods for each variable are automaticaly calculated and included in DAYCLI 
+where 
+- **date** = reference date in the format "*yyyymmdd*"  (year, month and day)
+- **interval (before tsd)** = Date and time of fresh snow depht mesurement in format (yyyymmddThhmm)
+- **interval** = time interval used in processing extreme, average, or cumulative measurements that are provided in the following columns. The format is "yyyymmddThhmm-yyyymmddThhmm" to indicate the start and end time of the period
 
-**Format 2**
-In case of  format 2. The time periods are not calculated by the program as in the format 1. they must be  directly provided by data base insted as in the example
+ - **rr** = Total Acumulate Precipitation ( Kg m-2)
+ - **fsd** = Fresh snow depth (m)
+ - **tsd** = Total snow depth (m)
+ - **tx** = Maximum temperature (K)
+ - **tn** = Minimum temperature (K)
+ - **tm** = Mean temperature (K)
 
-     &DATA_SECTION !!date;interval;tsd;qtsd;interval;rr;qrr;interval;fsd;qfsd;interval;txT qtx;interval;tn;qtn;interval;tm;qtm
+  The quality flag for each respective parameter above are identified by:
+  **qrr, qfsd, qtsd,qtn,qtx,qtm**   The quality flag provide here is associated with respective variable in codification process through the sequence 2-04-008; 0-31-021 which is set as 5  
+  The correspondent table associated to 0-31-021 = 5 can be found on Code BUFR and Flag table  and it is also preset bellow
+   - 0 = Data checked and declared good;
+   - 1 = Data checked and declared suspect;
+   - 2 = Data checked and declared aggregated;
+   - 3 = Data checked and declared out of instrument range;
+   - 4 = Data checked, declared aggregated, and out of instrument range;
+   - 5 = Parameter is not measured at the station;
+   - 6 = Daily value not provided;
+   - 7 = Data unchecked,
+   - 8-254 = Reserved;
+   - 255 = Missing (QC info not available)
+
+ Note:  In case of qualit flag = 5  or 6 the parameter value must be indicated  as missing (space in text format)  
+
+The example bellow shows a DATA_SECTION to codification of two days (20220401 and 20220402) of a same weather station 
+
+    &DATA_SECTION 
+    !date;interval;tsd;qtsd;interval;rr;qrr;interval;fsd;qfsd;interval;txT qtx;interval;tn;qtn;interval;tm;qtm
      20220401;20220401T0601;0;7;20220401T0601-20220402T0600;15.5;0;20220401T0601-20220402T0600;0;7;20220401T0601-20220402T0600;278.95;0; 20200331T1801-20220401T1800;273.35;0;20220401T0001-20220402T0000;275.05;0
      20220402;20220402T0601;0;7;20220402T0601-20220403T0600;1.9;0;20220402T0601-20220403T0600;1;7;20220402T0601-20220403T0600;277.65;0;20220401T1801-20220402T1800;274.05;0;20220402T0001-20220403T0000;275.85;0
 
-Where date = reference date (year,month and day in LMTZ); inteval = time interval of the followed variable variable.
+The software combines the fixed information from SECTION1 and STATION_ID with the daily information from DATA_SECTION  to encode a complitly DAYCLI message. So each message should contains one month of information (28,29 30 or 31 days) of a same wether station.
 
-In case of  total snoll deaf (tsd) on 20220401 
+To codification of multiple wether station is necessary the codificaion of multiple DAYCLI Messages. 
 
-    20220401T0601
+**ATTENTION**: Special attention should be paid to the time interval of each parameter, considering the transitions between months or years. For example, consider a case where the reference date is 20210301 and the minimum temperature is measured at 12:00. If the measurements are recorded between 12:00 of the previous day and 12:00 of the current day, the time interval to be provided in this case should be  "20210228T1200-20210301T1200", i.e., from February 28, 2021 at 12:00 until March 1, 2021. If the measurements are recorded between 12:00 of the current day and 12:00 of the following day, the time interval should be "20210301T1200-20210302T1200", i.e., from March 1, 2021 at 12:00 until March 2, 2021. So special attention should be given to the preparation of the time period in each case, for correctly DAYCLI message.coding.
 
-
- In case of  precipitation (rr) of the day 20220401
-
-     20220401T0601-20240402T00600 
-
-Notes:
-1 - the tsd are made on a specific pont in time, while the other paramenter as rr are a cummulative mesure made from a point in time to another point in time 
-2- 
