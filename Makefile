@@ -20,8 +20,8 @@ SRC=./src
 #--------------
 # MAIN PROGRAM 
 #--------------
-MAIN1         =$(SRC)/daycli_encoder95.f90
-MAIN2         =$(SRC)/daycli_encoder_legacy.f90
+MAIN1         =$(SRC)/daycli_encoder1.f90
+MAIN2         =$(SRC)/daycli_encoder2.f90
 DECODER       =$(SRC)/daycli_decoder.f90
 MDAYCLI       =$(SRC)/mdaycli.f90
 # ----------------------
@@ -48,8 +48,8 @@ MGRADSOF      = $(DIRSHARED)/grdlib/mgrads_obs.f90
 #---------------------------
 # EXEC
 #--------------------------
-DAYCLI_ENCODER1= $(DIRBIN)/daycli_encoder95
-DAYCLI_ENCODER2= $(DIRBIN)/daycli_encoder_legacy
+DAYCLI_ENCODER1= $(DIRBIN)/daycli_encoder1
+DAYCLI_ENCODER2= $(DIRBIN)/daycli_encoder2
 DAYCLI_DECODER= $(DIRBIN)/daycli_decoder
 BUFRLIST     =  $(DIRBIN)/bufrcontent
 BUFRGEN      =  $(DIRBIN)/bufrgen
@@ -68,7 +68,7 @@ $(DAYCLI_ENCODER1) : $(MAIN1) mbufr.o stringflib.o  datelib.o
 	$(F90)  -o $@ $(MAIN1) mbufr.o stringflib.o  datelib.o
 $(DAYCLI_ENCODER2) : $(MAIN2) mbufr.o stringflib.o  datelib.o
 	mkdir -p $(DIRBIN)
-	$(F90)  -o $@ $(MAIN2) mbufr.o stringflib.o  datelib.o
+	$(F90)  -o $@ $(MAIN2) mbufr.o stringflib.o datelib.o
 $(DAYCLI_DECODER) : $(DECODER) mbufr.o stringflib.o mdaycli.o
 	mkdir -p $(DIRBIN)
 	$(F90)  -o $@ $(DECODER) mbufr.o stringflib.o mdaycli.o
