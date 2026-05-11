@@ -9,12 +9,12 @@ export MBUFR_TABLES=../../bufrtables
 #----------------------------------------------------------------------------
 # Decode DAYCLI message from BUFR to text file using daycli_decoder (format2)
 #---------------------------------------------------------------------------
-../../bin/daycli_decoder -i ./DAYCLI_sample_82191.bufr -o ./DAYCLI_sample_82191.decoded.f2.txt
-../../bin/daycli_decoder -i ./DAYCLI_MF_0-20000-0-71805_202204.bufr -o ./DAYCLI_MF_0-20000-0-71805_202204.decoded_f2.txt
+../../bin/daycli_decoder -i ./DAYCLI_sample_82191.bufr -o ./DAYCLI_sample_82191.decoded.output1.txt
+../../bin/daycli_decoder -i ./DAYCLI_MF_0-20000-0-71805_202204.bufr -o ./DAYCLI_MF_0-20000-0-71805_202204.decoded_output1.txt
 
 #-------------------------------------------------------------
 # Decode DAYCLI message from BUFR to text file using BUFRDUMP
 #--------------------------------------------------------------
-../../bin/bufrdump -i ./DAYCLI_sample_82191.bufr -o DAYCLI_sample_82191.decoded.txt
-../../bin/bufrdump -i ./DAYCLI_MF_0-20000-0-71805_202204.bufr -o ./DAYCLI_MF_0-20000-0-71805_202204.decoded.txt
+../../bin/bufrdump -i ./DAYCLI_sample_82191.bufr -o DAYCLI_sample_82191.decoded_output2.txt
+../../bin/bufrdump -i ./DAYCLI_MF_0-20000-0-71805_202204.bufr -o ./DAYCLI_MF_0-20000-0-71805_202204.decoded_output2.txt
 
