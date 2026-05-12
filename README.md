@@ -1,7 +1,8 @@
 DAYCLI_TOOLKIT (Version 1.0 )
 ==========
 
-The DAYCLI_TOOLKIT was developed in Fortran at the National Institute for Space Research (INPE) to assist in the encoding and decoding of DAYCLI BUFR messages.  The **daycli_encoder95** is the main tool of the daycli_toolkit. It uses input files in a specific text format (see item 6) that need to be generated beforehand with valid daily climate information with quality control and the corresponding metadata. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encoder95, enabling the opening of DAYCLI BUFR files from other centers, and can also be used as a tool for verifying local encoding.
+
+The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**) . In the present version There are two possibility of input data formats: The data format of daycli_encoder1 can be use to encode observations whose are performed at fixed and consistent times throughout the year. The data format of daycli_endoder2 can be use to encode data whose observation times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encoder95, enabling the opening of DAYCLI BUFR files from other centers, and can also be used as a tool for verifying local encoding.
 
 
 **Notes:**
@@ -15,19 +16,19 @@ The DAYCLI_TOOLKIT was developed in Fortran at the National Institute for Space 
 
 1- Requirements: 
 ---------
- - A fortran 90 compiler or Higher. For example, gfortran, g95, ifort, pgf90, etc. 
- - make commnad (linux) or nmake (windows)
+ - A fortran 90 compiler or Higher. For example: gfortran, g95, ifort, pgf90, etc. 
+ - Linux make command or Windows nmake command
 
 2 - Compilation in Linux 
 ---------
 
-In case of you already have gfortran instaled, the daycli_toolkit can be compiled just typing the command **make** in the terminal.
-if you have another fortran compiler, check the files that contains the directives for differents compiler in the directory :
+In case you already have gfortran instaled, the daycli_toolkit can be compiled by just typing the command **make** in the terminal.
+if you have another fortran compiler, check the files that contain the directives for different compilers in the directory :
 - makefile_pgf90 ( for pfg90 compiler), 
 - makefile_ifort (for intel fortran)
 - makefile_g95 (for g95)
 
-And edit the file "Makefile" to include the apropriate directive in your case, as in the example bellow
+And edit the file "Makefile" to include the apropriate directive in your case, as in the example below
 
     #------------------------------------------------------
     # Include compilation directives for installed compiler
@@ -36,39 +37,38 @@ And edit the file "Makefile" to include the apropriate directive in your case, a
     #include makefile_g95
     #include makefile_ifort  
 
-Than type **make**
+Then type **make**
 
-In case of you are using other fortran compiler, that is not listed above, you can edit and include the directive apropriated in you case.
+In case you are using another fortran compiler, that is not listed above, you can edit and include the appropriate directive in you case.
 
 3 - Compilation in MS-Windows
 --------
 
-The daycli_toolkit was developed in linux, but it can be compiled and used in Windowns (DOS terminal or MS-Windowns terminal). However it is necessary previous instalation of the g95 fortran compiler and nmake command from the Microsoftware Visual Studio.  
+The daycli_toolkit was developed in linux, but it can be compiled and used in Windows (DOS terminal or MS-Windows terminal).However, the g95 fortran compiler and nmake command from the Microsoftware Visual Studio must be installed in your system.
 
-Type the command  bellow on DOS terminal or Windows terminal to compile
+Type the command  below on DOS terminal or Windows terminal to compile
 #
     nmake Makefile_windows 
 #
 
 
-
 4 - Environment variables
 ---------
-After compilation is recommended to set the environment **MBUFR_TABLES** in your system with the path to the folder where BUFR tables are. 
+After compilation it is recommended that you set the environment **MBUFR_TABLES** in your system with the path to the folder where BUFR tables are. 
 
-The procedure of setting environment variables can be different in each system or environment. But they use to be simple and similar. 
+The procedure for setting environment variables can be different in each system or environment. But they are simple and similar. 
 
-Here is a example for linux:  In the case of **bufrtables** was saved in the path **/home/user/daycli_toolkit/bufrtables**,it is necessary to edit the .bashrc file (or equivalent) in your system and add the follow instruction 
+Here is an example for linux:  In the case of **bufrtables** saved in the path **/home/user/daycli_toolkit/bufrtables**,it is necessary to edit the .bashrc file (or equivalent) in your system and add the follow instruction 
 
 # 
-export MBUFR_TABLES=/home/user/daycli_toolkit 
+export MBUFR_TABLES=/home/user/daycli_toolkit/bufrtables 
 #
 After the edition type on terminal the command **source ./bashrc** to apply changes. 
 
 5 - testing BUFR DAYCLI codification
 ---------------
 
-The daycli_enconder95 tool codes DAYCLI BUFR file from a text file 
+The daycli_enconder1 tool code DAYCLI BUFR file from a text file in format1  
 
 **Basic line command**
 
