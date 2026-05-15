@@ -2,7 +2,7 @@ DAYCLI_TOOLKIT (Version 1.0 )
 ==========
 
 
-The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**) . In the present version There are two possibility of input data formats: The data format of daycli_encoder1 can be use to encode observations whose are performed at fixed and consistent times throughout the year. The data format of daycli_endoder2 can be use to encode data whose observation times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers, and can also be used as a tool for verifying local encoding.
+The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**) . In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations whose are performed at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data whose observation times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers, and can also be used as a tool for verifying local encoding.
 
 
 **Notes:**
@@ -86,10 +86,10 @@ See and run the scripts **run_example01.sh**  or **run_example02.sh** and see th
 Note: this script is a bash script for linux.  If you are using dos windows or windows terminal some adaptations can be necessary 
 
 
-6 - Input data format 
+6 - Input data formats 
 ------------
 
-There are two possible of input data formats: The format used by daycli_encoder1 tool (format1) and the format used by daycli_encoder2 (format2). Both tools produce the exactly same BUFR DAYCLI message according template **3-07-095**. The differece is that the daycli_encoder1 automaticaly calculates the time period of each variable, necessary for DAYCLI messages acording fixed parameter provided in format 1, while daycli_encoder2 do not process any calculations. It just encode all information as they are provided in format 2. In bouth case The input data formats are based on “fortran namelist” format, in which groups of information are writes in a structure that starts with $GroupName and close with “/” .  More detailes about format 1 and 2 are below
+There are two possible formats for the input data: The format used by daycli_encoder1 tool (format1) and the format used by daycli_encoder2 (format2). Both tools produce the exactly same BUFR DAYCLI message according template **3-07-095**. The differece is that the daycli_encoder1 automaticaly calculates the time period of each variable, necessary for DAYCLI messages acording fixed parameter provided in format 1, while daycli_encoder2 do not process any calculations. It just encode all information as they are provided in format 2. In bouth case The input data formats are based on “fortran namelist” format, in which groups of information are writes in a structure that starts with $GroupName and close with “/” .  More detailes about format 1 and 2 are below
 
 **6.1 Common grous in format 1 and format2**
 
