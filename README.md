@@ -2,7 +2,7 @@ DAYCLI_TOOLKIT (Version 1.0 )
 ==========
 
 
-The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**) . In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations whose are performed at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data whose observation times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers, and can also be used as a tool for verifying local encoding.
+The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**) . In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations whose are performed at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data whose observation times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers.  It can also be used as a tool for verifying local encoding.
 
 
 **Notes:**
@@ -220,3 +220,16 @@ Complete examples of format 2 are included in the ./examples/example02/
    - 7 = Data unchecked,
    - 8-254 = Reserved;
    - 255 = Missing (QC info not available)
+
+   8 - REFERENCES
+   --------------
+[1] Manual on Codes (WMO-No 306), Volume 1.2 - FM94 BUFR edition 4 FT2026-1 Version 46.
+Available on    https://wmo.int/latest-version
+
+[2] Propose of DAYCLI message at WMO/ET-DATA - Actual Version (template 307095): "A new BUFR sequence for the exchange of daily summary report (DAYCLI)" 
+https://github.com/wmo-im/BUFR4/issues/238
+
+
+[3] Propose of DAYCLI message at WMO/ET-DATA - previous version (template 307075) 
+https://github.com/wmo-im/BUFR4/issues/51 
+
