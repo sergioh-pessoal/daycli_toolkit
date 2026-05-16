@@ -2,14 +2,14 @@ DAYCLI_TOOLKIT (Version 1.0 )
 ==========
 
 
-The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**) . In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations whose are performed at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data whose observation times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers.  It can also be used as a tool for verifying local encoding.
+The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**). In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations which are measure at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data observation whose times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers.  It can also be used as a tool for verifying local encoding.
 
 
 **Notes:**
 
 1 -  This software does not perform climatological calculations or quality control decisions.
 
-2- The DAYCLI messages can be decoded by any available BUFR software, as well as by the daycli_decoder and/or bufr_dump tool included in this toolkit. 
+2- The DAYCLI messages can be decoded by any available BUFR software, as well as by the daycli_decoder and/or bufr_dump tools included in this toolkit. 
 
 3 - Simple examples is also included
 
@@ -17,13 +17,13 @@ The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space R
 1- Requirements: 
 ---------
  - A fortran 90 compiler or Higher. For example: gfortran, g95, ifort, pgf90, etc. 
- - Linux make command or Windows nmake command
+- Linux "make" command or Windows "nmake" command.
 
 2 - Compilation in Linux 
 ---------
 
-In case you already have gfortran instaled, the daycli_toolkit can be compiled by just typing the command **make** in the terminal.
-if you have another fortran compiler, check the files that contain the directives for different compilers in the directory :
+In case you already have gfortran installed, the daycli_toolkit can be compiled by just typing the command **make** in the terminal.
+if you have another fortran compiler, check the file that contains the directives for different compilers in the directory :
 - makefile_pgf90 ( for pfg90 compiler), 
 - makefile_ifort (for intel fortran)
 - makefile_g95 (for g95)
@@ -78,18 +78,18 @@ The daycli_enconder1 tool code DAYCLI BUFR file from a text file in format1
 
 **Running the test example** 
 
-There are two example of DAYCLI codification using daycli_tookit: In the example/example_01 directory the  script  **run_example01.sh** demonstrates the encoding of daycli with **daycli_encoder1** ,  using text input file format-1 1; in the example/example_02, the script **run_example02.sh** demonstrates the encoding of daycli with **daycli_encoder2** ,  using text input file format-2. Demostration of the decoding of daycli using two different tools: **a) daycli_decoder** (wich decodes daycli back to the text ) and **b) bufr_dump** are also included.
+There are two examples of DAYCLI codification using daycli_tookit: In the example/example_01 directory the  script  **run_example01.sh** demonstrates the encoding of daycli with **daycli_encoder1** ,  using text input file format-1; in the example/example_02, the script **run_example02.sh** demonstrates the encoding of daycli with **daycli_encoder2** ,  using text input file format-2. Demostration of the decoding of daycli using two different tools: **a) daycli_decoder** (which decodes daycli back to the text ) and **b) bufr_dump** are also included.
 
 
 See and run the scripts **run_example01.sh**  or **run_example02.sh** and see the results.   
 
-Note: this script is a bash script for linux.  If you are using dos windows or windows terminal some adaptations can be necessary 
+Note: this script is a bash script for linux.  If you are using dos windows or windows terminal some adaptations can be necessary. 
 
 
 6 - Input data formats 
 ------------
 
-There are two possible formats for the input data: The format used by daycli_encoder1 tool (format1) and the format used by daycli_encoder2 (format2). Both tools produce the exactly same BUFR DAYCLI message according template **3-07-095**. The differece is that the daycli_encoder1 automaticaly calculates the time period of each variable, necessary for DAYCLI messages acording fixed parameter provided in format 1, while daycli_encoder2 do not process any calculations. It just encode all information as they are provided in format 2. In bouth case The input data formats are based on “fortran namelist” format, in which groups of information are writes in a structure that starts with $GroupName and close with “/” .  More detailes about format 1 and 2 are below
+There are two possible formats for the input data: The format used by daycli_encoder1 tool (format-1) and the format used by daycli_encoder2 (format-2). Both tools produce the exactly same BUFR DAYCLI message according to template **3-07-095**. The differece is that the daycli_encoder1 automaticaly calculates the time period of each variable, necessary for DAYCLI messages acording to fixed parameters provided in format-1, while daycli_encoder2 does not process any calculations. It just encodes all information as it is provided in format-2. In both cases, the input data formats are based on “fortran namelist” format, in which groups of information are written in a structure that starts with "$GroupName" and closes with “/” .  More detailes about format-1 and 2 are provided below
 
 **6.1 Common grous in format 1 and format2**
 
@@ -109,21 +109,21 @@ SECTION 1 group
      LONGITUDE= -56.10750
      WIGOS=0-20000-0-71805
      WMO=71805
-     HTEMP=  2 ! Hight of temperature sensor
-     HA= 21    ! HEIGHT OF STATION GROUND ABOVE MEAN SEA LEVEL
-     SMC_TEMP= ! SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR TEMPERATURE                                                                      
-     SMC_PREC= ! SITING AND MEASUREMENT QUALITY CLASSIFICATION FOR PRECIPITATION                         
+     HTEMP=  2 ! Height of temperature sensor
+     HA= 21    ! Height of station above mean sea level 
+     SMC_TEMP=5! Siting and measurement quality classification for temperature       
+     SMC_PREC= ! Siting and measurement quality classification for precipitation                         
      METHOD_TM= 3 !Method used to calculate the average daily temperature                                                                     
-     TIME_OFFSET=-240! Time difference in minutes:  Local Meteorological Time Zone - UTC                                                                                            
-     ! Use 0 in TIME_OFFICE in case of date and time in  UTC 
+     TIME_OFFSET=-240! Time difference in minutes:  Local Meteorological Time Zone -UTC                                                                                            
+     ! Use 0 in TIME_OFFICE in case of date and time in UTC 
      /
 
 
 **6.2 Input text Format 1**
   
-In addition to the groups presented in item 6.1, format 1 has the following groups.
+In addition to the groups presented in item 6.1, format-1 there are the following groups.
 
- - The groups &STIME_{TT,TN,TM,RR,DS} - Define a daily time period for each variable. For example for TN (Minimum temperature)
+ - The groups: &STIME_{TT,TN,TM,RR,DS} define a daily time period for each variable. For example for TN (Minimum temperature)
 
  **Minimum temperature**
 
@@ -133,11 +133,12 @@ In addition to the groups presented in item 6.1, format 1 has the following grou
     DT=-1
     /
 
-In the example above, are indicate that the minimum temperature are mesured at 18:01 LMTZ ( HOUR=18, MINUTE=01). DT=-1 indicates that the mesured are taken from previous day to present day (reference day). Use DT=1 to indicate that the mesure are taken fron 18:01 LMTZ at reference day to next day.
+The example above indicates that the minimum temperature is measured at 18:01 LMTZ ( HOUR=18, MINUTE=01). DT=-1 indicates that the measurements are taken from the previous day to the present day (reference day). Use DT=1 to indicate that the measurements are taken fron 18:01 LMTZ at reference day to next day.
 
-With the information abouve the daycli_encoder1 perform the calculation of time period for this parameter for all data provided. For example. In case of DT=-1 and data assined as minimum temperature of 1st Marc 2021  the sofware calculates the time period as  20210228T1801-20210301T1800 i e . from February 28, 2021 at 12:00 until March 1, 2021.  In case of DT=1 the time period would be 20210301T1801-20210302T1800. 
+With the information above the daycli_encoder-1 performs the calculation for time periods for all the minimum temperatures provided. For example. In case of DT=-1 and data assined as minimum temperature of 1st March 2021  the sofware calculates the time period as  20210228T1801-20210301T1800 i e . from February 28, 2021 at 12:00 until March 1, 2021.  In case of DT=1 the time period would be 20210301T1801-20210302T1800. 
 
-Note that the software considering the transitions between months or years to calculate the time slot and than coding the information in DAYCLI BUFR message
+Note that the software consideres the transitions between months or years to calculate the time period and than codes the information in DAYCLI BUFR message.
+**we are here**
 
 - The DATA_SECTION group 
 The last group, “&DATA SECTION”, is the group that contains the actual daily climate variables on a table format with rows and collums separated by semicolons (“;”).  The collums in format 1 are: date;  rr; qrr; fsd; qfsd; tsd; qtsd; tn; qtn;  tx;  qtx; tm; qtm
