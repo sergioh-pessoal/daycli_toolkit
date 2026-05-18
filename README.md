@@ -2,7 +2,7 @@ DAYCLI_TOOLKIT (Version 1.0 )
 ==========
 
 
-The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages ( template **3-07-095**). In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations which are measure at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data observation whose times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers.  It can also be used as a tool for verifying local encoding.
+The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages under template **3-07-095** (see [1]). In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations which are measure at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data observation whose times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers.  It can also be used as a tool for verifying local encoding.
 
 
 **Notes:**
@@ -138,10 +138,10 @@ The example above indicates that the minimum temperature is measured at 18:01 LM
 With the information above the daycli_encoder-1 performs the calculation for time periods for all the minimum temperatures provided. For example. In case of DT=-1 and data assined as minimum temperature of 1st March 2021  the sofware calculates the time period as  20210228T1801-20210301T1800 i e . from February 28, 2021 at 12:00 until March 1, 2021.  In case of DT=1 the time period would be 20210301T1801-20210302T1800. 
 
 Note that the software consideres the transitions between months or years to calculate the time period and than codes the information in DAYCLI BUFR message.
-**we are here**
+
 
 - The DATA_SECTION group 
-The last group, “&DATA SECTION”, is the group that contains the actual daily climate variables on a table format with rows and collums separated by semicolons (“;”).  The collums in format 1 are: date;  rr; qrr; fsd; qfsd; tsd; qtsd; tn; qtn;  tx;  qtx; tm; qtm
+The last group, “&DATA SECTION”, is the group that contains the actual daily climate parameter on a table format with rows and columns separated by semicolons (“;”).  The columns in format 1 are: date; rr; qrr; fsd; qfsd; tsd; qtsd; tn; qtn;  tx;  qtx; tm; qtm
 
 where 
  - **date** = Reference date LMTZ
@@ -152,7 +152,7 @@ where
  - **tn** = Minimum temperature (K)
  - **tm** = Mean temperature (K)
 
-  The quality flag for each respective parameter above are identified by:
+  The quality flags for respective parameters above are identified by:
   **qrr, qfsd, qtsd,qtn,qtx,qtm**
 
 The example below shows the first few rows of the $DATA_SECTION of the format1.
@@ -170,18 +170,18 @@ The example below shows the first few rows of the $DATA_SECTION of the format1.
 /
 Complete examples of format 1 are included in the ./examples/example01/ 
 
-6.3 Input text format 2
+**6.3 Input text format 2**
 
 Format 2 does not have the &STIME_{TT,TN,TM,RR,DS} groups like format 1. Instead, the time periods are provided directly in the $DATA_SECTION group. In other words, daycli_encoder2 does not perform any time window processing; it directly encodes the data in the DAYCLI message as it is provided in format 2.
 
-In that way the $DATA_SECTION group have the followed collums separated by semicolons (“;”).  
+In that way the $DATA_SECTION group have the followed columns separated by semicolons (“;”).  
 
    **date; interval; tsd; qtsd; interval; rr; qrr; interval; fsd; qfsd; interval; tx qtx;interval;tn;qtn;interval;tm;qtm**
 
 
 where 
 - **date** = reference date in the format "*yyyymmdd*"  (year, month and day)
-- **interval (before tsd)** = Date and time of fresh snow depht mesurement in format (yyyymmddThhmm)
+- **interval (before tsd)** = Date and time of fresh snow depth measurement in format "*yyyymmddThhmm*" (Year, month, day, "T", hour and minute)
 - **interval** = time interval used in processing extreme, average, or cumulative measurements that are provided in the following columns. The format is "yyyymmddThhmm-yyyymmddThhmm" to indicate the start and end time of the period
 
  - **rr** = Total Acumulate Precipitation ( Kg m-2)
@@ -209,8 +209,8 @@ Complete examples of format 2 are included in the ./examples/example02/
 
 7 - Notes
 --------
-7.1 - The quality flag provide in format 1 and 2 are associated with respective variable in codification process through the BUFR sequence 2-04-008; 0-31-021 which is set as 5  
-  The correspondent table associated to 0-31-021 = 5 can be found on Code BUFR and Flag table  and it is also preset below
+7.1 - The quality flag provide in format 1 and 2 are associated with respective parameter in codification process through the BUFR sequence 2-04-008; 0-31-021 which is set as 5.  
+  The correspondent table associated with "0-31-021" is "5" that can be found on "Code BUFR and Flag table"  and it is also presented below:
    - 0 = Data checked and declared good;
    - 1 = Data checked and declared suspect;
    - 2 = Data checked and declared aggregated;
