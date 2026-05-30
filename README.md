@@ -1,15 +1,23 @@
-DAYCLI_TOOLKIT (Version 1.0 )
-==========
+DAYCLI_TOOLKIT 
+===============
+ DAYCLI_TOOLKIT: Software to Encode and Decoded Daily Climate Reports in WMO BUFR template 3-07-095 -Version 1.0 
+----------
 
 
-The DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages under template **3-07-095** (see [1]). In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations which are measure at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data observation whose times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers.  It can also be used as a tool for verifying local encoding.
+1-Introduction and Historical Review
+-----------
+
+The development of the main measures of the state of the climate, such as the global temperature records, extensively depends on monthly CLIMAT data provided by National Meteorological and Hydrological Services (NMHSs). Over the last 30 years, there has been a growing demand for indices and measures of the climate that also consider   means and extremes daily values. To address this issue, a new BUFR template for Daily Climate reports (template 3-07-074) was developed in 2016 and was named as DAYCLI message.  see [1] and [2].
+In 2018, a one-year trail phase of the use of DAYCLI message as launched by WMO.  After  this trail phase, a first revision of DAYCLI was done resulting in the development of a new DAYCLI message (template 3-07-075), which was included in the Manual on Code in 2020 [3]. A second revision was than done and it has been noted that the use of Coordinated Universal Time (UTC) in template 3 07 075 may introduce inconsistencies or potential misinterpretations for some National Meteorological and Hydrological Services (NMHSs), particularly those whose climatological observations are structured around their local time zones. Recognizing that most NMHSs measure, compute, and store daily climatological data according to national or regional time standards, **a new DAYCLI message (template 3-07-095 )** was developed with collaboration of SERCOM / SC-CLI / ET-DDS, SERCOM / SC-CLI / ET-MCCVC and INFCOM / SC-IMT / ET-DATA STANDARD.  It was concluded by ET-DATA in January 2026 [4] and will be included in The BUFR tables - version 46 during 2026. [5]
+
+The software provided here, DAYCLI_TOOLKIT was developed at the Brazilian National Institute for Space Research (INPE) to support the encoding and decoding of DAYCLI BUFR messages under template **3-07-095** (see note [1]). In the present version there are two tools to encode DAYCLI BUFR message: The **daycli_encoder1** and **daycli_encoder2**. The **daycli_encoder1**  can be use to encode observations which are measure at fixed and consistent times throughout the year. The **daycli_endoder2** can be use to encode data observation whose times may vary during the year. Another important tool is the **daycli_decoder**. It allows decoding a DAYCLI BUFR message back into the text format used by daycli_encode2, enabling the opening of DAYCLI BUFR files from other centers.  It can also be used as a tool for verifying local encoding.
 
 
 **Notes:**
 
-1 -  This software does not perform climatological calculations or quality control decisions.
+2-  This software does not perform climatological calculations or quality control decisions.
 
-2- The DAYCLI messages can be decoded by any available BUFR software, as well as by the daycli_decoder and/or bufr_dump tools included in this toolkit. 
+3- The DAYCLI messages can be decoded by any available BUFR software, as well as by the daycli_decoder and/or bufr_dump tools included in this toolkit. 
 
 3 - Simple examples is also included
 
@@ -224,13 +232,13 @@ Complete examples of format 2 are included in the ./examples/example02/
 
    8 - REFERENCES
    --------------
-[1] Manual on Codes (WMO-No 306), Volume 1.2 - FM94 BUFR edition 4 FT2026-1 Version 46.
-Available on    https://wmo.int/latest-version
+[1] Jones, P.D., Lister, D.H., Osborn, T.J., Harpham, C., Salmon, M., Morice, C.P., 2012: Hemispheric and large-scale land-surface air temperature variations: An extensive revision and an update to 2010. Journal of Geophysical Research, 117, D05127, doi:10.1029/2011JD017139.
 
-[2] Propose of DAYCLI message at WMO/ET-DATA - Actual Version (template 307095): "A new BUFR sequence for the exchange of daily summary report (DAYCLI)" 
-https://github.com/wmo-im/BUFR4/issues/238
+[2] Propose of DAYCLI message at WMO/ET-DATA -  (template 307075) wmo-im/BUFR4#51 
 
+[3] Manual on Codes (WMO-No 306), Volume 1.2 - FM94 BUFR edition 4 
 
-[3] Propose of DAYCLI message at WMO/ET-DATA - previous version (template 307075) 
-https://github.com/wmo-im/BUFR4/issues/51 
+[4] Propose of DAYCLI message at WMO/ET-DATA -  (template 307095): "A new BUFR sequence for the exchange of daily summary report (DAYCLI)"wmo-im/BUFR4#238
+
+[5]  .Latest Version of the Machine Readable Codes: Manual on Codes (WMO-No. 306), Volume I.2 Available on https://wmo.int/latest-version
 
