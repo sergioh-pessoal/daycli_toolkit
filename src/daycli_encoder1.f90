@@ -591,14 +591,15 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
  
 	stop
 	contains
-	!--------------
-	! get_time_slot
-	!--------------
+	!--------------------------------------------------------------------------
+    !get_time_slot2:
+    ! Retrieves start time and end time of time_slot for each reference date
+    !--------------------------------------------------------------------------
 	subroutine get_time_slot(year,month,day,ts,start_time,end_time)
 	  integer,           intent(in)::year,month,day ! Reference date and time in LMTZ
 	  type(time_slot),intent(inout)::ts
 	  integer,          intent(out)::start_time,end_time
-	  real(8)::JDATE
+	  !real(8)::JDATE
 	  ts%year=year
 	  ts%month=month
 	  ts%day=day
@@ -611,25 +612,39 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 	  end if
 
 	end subroutine
+	!--------------------------------------------------------------------------
+    !get_time_slot2:
+    ! Retrieves start time and end time of time_slot for each reference date
+    ! (Results based on julinan date and time)
+    !--------------------------------------------------------------------------
 	subroutine get_time_slot2(year,month,day,ts,JDATE1,JDATE2)
 	  integer,           intent(in)::year,month,day ! Reference date and time in LMTZ
-	  type(time_slot),intent(inout)::ts
-	  real(8),        intent(out)::JDATE1,JDATE2
+	  type(time_slot),intent(inout)::ts             ! Time slot
+	  real(8),        intent(out)::JDATE1,JDATE2    ! Returns start time (DATE1) and end time (DATE2)
 
 	  real(8)::JDATE
 
 	  JDATE=fjulian(year,month,day,int(ts%hour),int(ts%minute),0)
-	  if(ts%dt==-1) then
+
+
+	  if(ts%dt==-1) then   ! Case start date  = reference date - 1 day
 	    JDATE1=JDATE-1.0
 	    JDATE2=JDATE
-	  elseif(ts%dt==1) then
+	  elseif(ts%dt==1.0) then ! Case start date = referece date
 	    JDATE1=JDATE
 	    JDATE2=JDATE+1.0
-	  else
+	  else                   !Similar to the previous case
 		JDATE1=JDATE
-		JDATE2=JDATE
+		JDATE2=JDATE+1.0
 	  end if
 	  if (ts%minute==1) JDATE2=JDATE2-1.0/60.0/24.0
+
+	  ! The software considers the time interval as closed at both ends.
+	  ! In this case the start time starts 1 minute after of the last mesurement
+      ! Example: Interval  {T : Day 01 05:01 <= T <=  Day 02 05:00}]{
+      !
+      ! However, it is possible consider a opened start time  e.g. The time starts at same time of last measurement.
+	  ! In this case: { T :Day 01 05:00 <  T <= Day 02 05:00} it also be possible.
 
 	end subroutine
 
@@ -637,10 +652,10 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 		integer,intent(inout)::j
 		type(sec4type),intent(inout)::sec4
 		j=j+1;sec4%r(j,s)= undef()   ! Year
-	    j=j+1;sec4%r(j,s)= undef()   !47)  004002-MONTH (MON)
-		j=j+1;sec4%r(j,s)= undef()     !48)  004003-DAY (D)
-		j=j+1;sec4%r(j,s)= undef()    !49) *004004-HOUR (H)
-		j=j+1;sec4%r(j,s)= undef()  !50)  004005-MINUTE (MIN)
+	    j=j+1;sec4%r(j,s)= undef()   ! 47)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= undef()   ! 48)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= undef()   ! 49) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= undef()   ! 50)  004005-MINUTE (MIN)
 	end subroutine
 end program 
 !
