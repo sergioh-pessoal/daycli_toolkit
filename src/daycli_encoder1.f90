@@ -297,9 +297,9 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 	
 			RR (i)=val(substrings(2))
 			QRR(i)=val(substrings(3))
-			HNEIGEF(i)=val(substrings(4))
+			HNEIGEF(i)=val(substrings(4))  !ds - Fresh snow
 			qHNEIGEF(i)=val(substrings(5))
-			NEIGETOT06(i)=val(substrings(6))
+			NEIGETOT06(i)=val(substrings(6)) !tsd Total snow deth
 			qNEIGETOT06(i)=val(substrings(7))
 			
 			tN(i)=val(substrings(8))
@@ -442,17 +442,21 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 
 	! 	Total snow depth(Instantaneous measurement)
 	!---------------
-	call get_time_slot2(YEAR,MONTH,DAY,TIME_TSD,JDATE1,JDATE2)
 	j=j+1;sec4%r(j,s)= 42             !19) 008028-EXTENDED TIME SIGNIFICANCE FOR TOTAL SNOW DEATH
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE1)  !20) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE1) !21)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE1)   !22)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE1)  !23) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE1)!24)  004005-MINUTE (MIN)
+	call get_time_slot2(YEAR,MONTH,DAY,TIME_TSD,JDATE1,JDATE2)
+	if ((qNEIGETOT06(day)==5).or.(qNEIGETOT06(day)<0).or.(JDATE1==0.0)) then
+	   	call undef_date_time (j,sec4)
+    else
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE1)  !20) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE1) !21)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE1)   !22)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE1)  !23) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE1)!24)  004005-MINUTE (MIN)
+	end if
 	j=j+1;sec4%r(j,s)= 0              !25)  204008-ADD ASSOCIATED FIELD
 	j=j+1;sec4%r(j,s)= FieldSig       !26)  031021-1-BIT INDICATOR OF QUALITY
-	j=j+1;sec4%r(j,s)= qHNEIGEF(day)  !27)  999999-VALUE OF THE ASSOCIATED FIELD
-	j=j+1;sec4%r(j,s)= HNEIGEF(DAY)   !28)  013013-TOTAL SNOW DEPTH (M)
+	j=j+1;sec4%r(j,s)= qNEIGETOT06(DAY)!27)  999999-VALUE OF THE ASSOCIATED FIELD
+	j=j+1;sec4%r(j,s)= NEIGETOT06(DAY)!28)  013013-TOTAL SNOW DEPTH (M)
 	j=j+1;sec4%r(j,s)= 0              !29)  204000-ADD ASSOCIATED FIELD CANCEL
 
 	! Period over which the daily measurement is made (LMTZ)
@@ -462,16 +466,21 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 	!(precipitation)
 	!---------------
 	call get_time_slot2(YEAR,MONTH,DAY,TIME_RR,JDATE1,JDATE2)
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE1)   !31) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE1)  !32)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE1)    !33)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE1)   !34) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE1) !35)  004005-MINUTE (MIN)
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE2)   !36) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE2)  !37)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE2)    !38)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE2)   !39) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE2) !40)  004005-MINUTE (MIN)
+	if ((qRR(day)==5).or.(qRR(day)<0).or.(JDATE1==0.0)) then
+	   	call undef_date_time (j,sec4)
+	   	call undef_date_time (j,sec4)
+    else
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE1)   !31) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE1)  !32)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE1)    !33)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE1)   !34) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE1) !35)  004005-MINUTE (MIN)
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE2)   !36) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE2)  !37)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE2)    !38)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE2)   !39) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE2) !40)  004005-MINUTE (MIN)
+	end if
 	j=j+1;sec4%r(j,s)= 0               !41)  204008-ADD ASSOCIATED FIELD
 	j=j+1;sec4%r(j,s)= FieldSig        !42)  031021-1-BIT INDICATOR OF QUALITY <- ASSOCIATED FIELD SIGNIFICANCE (CODE TABLE)
 	j=j+1;sec4%r(j,s)= QRR(day)        !43)  999999-VALUE OF THE ASSOCIATED FIELD (SIZE =  8BITS)
@@ -480,16 +489,11 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 
 	!Depth of fresh snow
 	!----------------
-	if ((qHNEIGEF(day)==5).or.(qHNEIGEF(day)<0)) then
+	call get_time_slot2(YEAR,MONTH,DAY,TIME_DS,JDATE1,JDATE2)
+	if ((qHNEIGEF(day)==5).or.(qHNEIGEF(day)<0).or.(JDATE1==0.0)) then
 		call undef_date_time (j,sec4)
 		call undef_date_time (j,sec4)
-		j=j+1;sec4%r(j,s)= 0               !56)  204008-ADD ASSOCIATED FIELD
-		j=j+1;sec4%r(j,s)= FieldSig        !57)  031021-1-BIT INDICATOR OF QUALITY <- ASSOCIATED FIELD SIGNIFICANCE (CODE TABLE)
-		j=j+1;sec4%r(j,s)= qHNEIGEF(day)   !58)  999999 Assoaciated field
-		j=j+1;sec4%r(j,s)= undef()         !59)  013012-DEPTH OF FRESH SNOW (M)
-		j=j+1;sec4%r(j,s)=  0              !60)  204000-CANCE
 	else
-		call get_time_slot2(YEAR,MONTH,DAY,TIME_DS,JDATE1,JDATE2)
 		j=j+1;sec4%r(j,s)= fYEAR(JDATE1)   !46) *004001-YEAR (A)
 		j=j+1;sec4%r(j,s)= fMONTH(JDATE1)   !47)  004002-MONTH (MON)
 		j=j+1;sec4%r(j,s)= fDAY(JDATE1)     !48)  004003-DAY (D)
@@ -500,12 +504,13 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 		j=j+1;sec4%r(j,s)= fDAY(JDATE2)     !53)  004003-DAY (D)
 		j=j+1;sec4%r(j,s)= fHOUR(JDATE2)    !54) *004004-HOUR (H)
 		j=j+1;sec4%r(j,s)= fMINUTE(JDATE2)  !55)  004005-MINUTE (MIN)
-		j=j+1;sec4%r(j,s)= 0               !56)  204008-ADD ASSOCIATED FIELD
-		j=j+1;sec4%r(j,s)= FieldSig        !57)  031021-1-BIT INDICATOR OF QUALITY <- ASSOCIATED FIELD SIGNIFICANCE (CODE TABLE)
-		j=j+1;sec4%r(j,s)= qHNEIGEF(day)   !58)  999999 Assoaciated field
-		j=j+1;sec4%r(j,s)= HNEIGEF(DAY)    !59)  013012-DEPTH OF FRESH SNOW (M)
-		j=j+1;sec4%r(j,s)=  0              !60)  204000-CANCEL
-    end if
+	end if
+	j=j+1;sec4%r(j,s)= 0               !56)  204008-ADD ASSOCIATED FIELD
+	j=j+1;sec4%r(j,s)= FieldSig        !57)  031021-1-BIT INDICATOR OF QUALITY <- ASSOCIATED FIELD SIGNIFICANCE (CODE TABLE)
+	j=j+1;sec4%r(j,s)= qHNEIGEF(day)   !58)  999999 Assoaciated field
+	j=j+1;sec4%r(j,s)= HNEIGEF(DAY)    !59)  013012-DEPTH OF FRESH SNOW (M)
+	j=j+1;sec4%r(j,s)=  0              !60)  204000-CANCEL
+
 
 
 	!Temperatures
@@ -515,16 +520,21 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 	 !{ Loop tx,tn,tt	
 	 !{TX
 	 call get_time_slot2(YEAR,MONTH,DAY,TIME_TX,JDATE1,JDATE2)
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE1)    !62) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE1)   !63)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE1)     !64)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE1)    !65) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE1)  !66)  004005-MINUTE (MIN)
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE2)    !67) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE2)   !68)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE2)     !69)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE2)    !70) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE2)  !71)  004005-MINUTE (MIN)
+	 if ((qtx(day)==5).or.(qtx(day)<0).or.(JDATE1==0.0)) then
+		call undef_date_time (j,sec4)
+		call undef_date_time (j,sec4)
+	else
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE1)    !62) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE1)   !63)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE1)     !64)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE1)    !65) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE1)  !66)  004005-MINUTE (MIN)
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE2)    !67) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE2)   !68)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE2)     !69)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE2)    !70) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE2)  !71)  004005-MINUTE (MIN)
+	end if
 	j=j+1;sec4%r(j,s)= maximum          !72)  008023-RESERVED <- FIRST-ORDER STATISTICS (CODE TABLE)
 	j=j+1;sec4%r(j,s)= 0                !73)  204008-ADD ASSOCIATED FIELD
 	j=j+1;sec4%r(j,s)= FieldSig         !74)  031021-1-BIT INDICATOR OF QUALITY <- ASSOCIATED FIELD SIGNIFICANCE (CODE TABLE)
@@ -534,16 +544,21 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 	 !}
 	!{TN
 	call get_time_slot2(YEAR,MONTH,DAY,TIME_TN,JDATE1,JDATE2)
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE1)    !78) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE1)   !79)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE1)     !80)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE1)    !81) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE1)  !82)  004005-MINUTE (MIN)
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE2)    !83) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE2)   !84)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE2)     !85)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE2)   !86) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE2)  !87)  004005-MINUTE (MIN)
+	 if ((qtn(day)==5).or.(qtn(day)<0).or.(JDATE1==0.0)) then
+		call undef_date_time (j,sec4)
+		call undef_date_time (j,sec4)
+	else
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE1)    !78) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE1)   !79)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE1)     !80)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE1)    !81) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE1)  !82)  004005-MINUTE (MIN)
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE2)    !83) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE2)   !84)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE2)     !85)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE2)   !86) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE2)  !87)  004005-MINUTE (MIN)
+	end if
 	j=j+1;sec4%r(j,s)= minimum         !88)  008023-RESERVED <- FIRST-ORDER STATISTICS (CODE TABLE)
 	j=j+1;sec4%r(j,s)= 0               !89)  204008-ADD ASSOCIATED FIELD
 	j=j+1;sec4%r(j,s)= FieldSig        !90)  031021-1-BIT INDICATOR OF QUALITY <- ASSOCIATED FIELD SIGNIFICANCE (CODE TABLE)
@@ -553,16 +568,22 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 	 !}
 	 !{
 	call get_time_slot2(YEAR,MONTH,DAY,TIME_TM,JDATE1,JDATE2)
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE1)    !94) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE1)   !95)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE1)     !96)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE1)    !97) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE1)  !98)  004005-MINUTE (MIN
-	j=j+1;sec4%r(j,s)= fYEAR(JDATE2)    !99) *004001-YEAR (A)
-	j=j+1;sec4%r(j,s)= fMONTH(JDATE2)   !100)  004002-MONTH (MON)
-	j=j+1;sec4%r(j,s)= fDAY(JDATE2)    !101)  004003-DAY (D)
-	j=j+1;sec4%r(j,s)= fHOUR(JDATE2)    !102) *004004-HOUR (H)
-	j=j+1;sec4%r(j,s)= fMINUTE(JDATE2)  !103)  004005-MINUTE (MIN)
+	 if ((qtm(day)==5).or.(qtm(day)<0).or.(JDATE1==0.0)) then
+	 	call undef_date_time (j,sec4)
+		call undef_date_time (j,sec4)
+	else
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE1)    !94) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE1)   !95)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE1)     !96)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE1)    !97) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE1)  !98)  004005-MINUTE (MIN
+		j=j+1;sec4%r(j,s)= fYEAR(JDATE2)    !99) *004001-YEAR (A)
+		j=j+1;sec4%r(j,s)= fMONTH(JDATE2)   !100)  004002-MONTH (MON)
+		j=j+1;sec4%r(j,s)= fDAY(JDATE2)    !101)  004003-DAY (D)
+		j=j+1;sec4%r(j,s)= fHOUR(JDATE2)    !102) *004004-HOUR (H)
+		j=j+1;sec4%r(j,s)= fMINUTE(JDATE2)  !103)  004005-MINUTE (MIN)
+	end if
+
 	j=j+1;sec4%r(j,s)= mean            !104)  008023-RESERVED <- FIRST-ORDER STATISTICS (CODE TABLE)
 	j=j+1;sec4%r(j,s)= 0               !105)  204008-ADD ASSOCIATED FIELD
 	j=j+1;sec4%r(j,s)= FieldSig        !106)  031021-1-BIT INDICATOR OF QUALITY <- ASSOCIATED FIELD SIGNIFICANCE (CODE TABLE)
@@ -614,9 +635,18 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 	end subroutine
 	!--------------------------------------------------------------------------
     !get_time_slot2:
-    ! Retrieves start time and end time of time_slot for each reference date
-    ! (Results based on julinan date and time)
+    !  It resturns the start time and end time from a reference date and a
+    !  time_slot indication.
     !--------------------------------------------------------------------------
+    !  Notes :
+    !    1 -Results based on julinan date and time
+    !    2 - If ts%dt=255 (missing values) it returns JDATE1=JATE2=0=Missing
+    !    3 - the time interval is considered as closed interval at both ends.
+    !        the start time must starts 1 minute after of the last measurement.
+    !        Example: Interval  {i : Day 01 05:01 <= i <=  Day 02 05:00}
+    !        However, the example bellow is also accepted
+    !        Example: { i :Day 01 05:00 <  i <= Day 02 05:00}
+    !---------------------------------------------------------------------------
 	subroutine get_time_slot2(year,month,day,ts,JDATE1,JDATE2)
 	  integer,           intent(in)::year,month,day ! Reference date and time in LMTZ
 	  type(time_slot),intent(inout)::ts             ! Time slot
@@ -633,18 +663,19 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 	  elseif(ts%dt==1.0) then ! Case start date = referece date
 	    JDATE1=JDATE
 	    JDATE2=JDATE+1.0
-	  else                   !Similar to the previous case
+	  elseif(ts%dt==0.0) then                   !Similar to the previous case
 		JDATE1=JDATE
+		JDATE2=JDATE+1.0
+	  elseif (ts%dt==255) then
+	    JDATE1=0
+	    JDATE2=0
+	  else
+ 	    JDATE1=JDATE
 		JDATE2=JDATE+1.0
 	  end if
 	  if (ts%minute==1) JDATE2=JDATE2-1.0/60.0/24.0
 
-	  ! The software considers the time interval as closed at both ends.
-	  ! In this case the start time starts 1 minute after of the last mesurement
-      ! Example: Interval  {T : Day 01 05:01 <= T <=  Day 02 05:00}]{
-      !
-      ! However, it is possible consider a opened start time  e.g. The time starts at same time of last measurement.
-	  ! In this case: { T :Day 01 05:00 <  T <= Day 02 05:00} it also be possible.
+
 
 	end subroutine
 
@@ -652,10 +683,10 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 		integer,intent(inout)::j
 		type(sec4type),intent(inout)::sec4
 		j=j+1;sec4%r(j,s)= undef()   ! Year
-	    j=j+1;sec4%r(j,s)= undef()   ! 47)  004002-MONTH (MON)
-		j=j+1;sec4%r(j,s)= undef()   ! 48)  004003-DAY (D)
-		j=j+1;sec4%r(j,s)= undef()   ! 49) *004004-HOUR (H)
-		j=j+1;sec4%r(j,s)= undef()   ! 50)  004005-MINUTE (MIN)
+	    j=j+1;sec4%r(j,s)= undef()   ! MONTH (MON)
+		j=j+1;sec4%r(j,s)= undef()   ! DAY (D)
+		j=j+1;sec4%r(j,s)= undef()   ! HOUR (H)
+		j=j+1;sec4%r(j,s)= undef()   ! MINUTE (MIN)
 	end subroutine
 end program 
 !
