@@ -141,7 +141,7 @@ In addition to the groups presented in item 6.1, format-1 there are the followin
     DT=-1
     /
 
-The example above indicates that the minimum temperature is measured at 18:01 LMTZ ( HOUR=18, MINUTE=01). DT=-1 indicates that the measurements are taken from the previous day to the present day (reference day). Use DT=1 to indicate that the measurements are taken fron 18:01 LMTZ at reference day to next day.
+The example above indicates that minimum temperatures are measured from 18:01 LMTZ (HOUR=18, MINUTE=01) of the previous day (DT=-1) until 18:00 LMTZ of the current day (reference day). Use DT=0 to indicate that measurements are taken from 18:01 LMTZ of the reference day until 18:00 LMTZ of the following day.
 
 With the information above the daycli_encoder-1 performs the calculation for time periods for all the minimum temperatures provided. For example. In case of DT=-1 and data assined as minimum temperature of 1st March 2021  the sofware calculates the time period as  20210228T1801-20210301T1800 i e . from February 28, 2021 at 12:00 until March 1, 2021.  In case of DT=1 the time period would be 20210301T1801-20210302T1800. 
 
@@ -229,6 +229,8 @@ Complete examples of format 2 are included in the ./examples/example02/
    - 7 = Data unchecked,
    - 8-254 = Reserved;
    - 255 = Missing (QC info not available)
+
+ 7.2 - Software updates and other information can be obtained via the link https://github.com/sergioh-pessoal/daycli_toolkit or by contacting the author at sergioh.pessoal@gmail.com
 
    8 - REFERENCES
    --------------

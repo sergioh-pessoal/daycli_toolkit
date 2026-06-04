@@ -376,7 +376,7 @@ subroutine write_line2(un,sec1,line)
    write(xline,'(i4.4,2i2.2,";")')line%rd%year,line%rd%month,line%rd%day
    do x=1,6
 
-       if (((line%ddata(x)%val==undef()).and.(line%ddata(x)%qc==255))) goto 300
+     !  if (((line%ddata(x)%val==undef()).and.(line%ddata(x)%qc==255))) goto 300
          xline=trim(xline)//trim(write_datetime(line%ddata(x)))//";"
          if (line%ddata(x)%val==undef()) then
             auxc=""

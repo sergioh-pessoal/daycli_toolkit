@@ -644,8 +644,13 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
     !    3 - the time interval is considered as closed interval at both ends.
     !        the start time must starts 1 minute after of the last measurement.
     !        Example: Interval  {i : Day 01 05:01 <= i <=  Day 02 05:00}
-    !        However, the example bellow is also accepted
-    !        Example: { i :Day 01 05:00 <  i <= Day 02 05:00}
+    !    4-  The time interval can occasionally be defined as open at the
+    !        beginning and closed at the end, i.e.,]
+    !        { i :Day 01 05:00 < i <= Day 02 05:00}.
+    !        This representation is not allowed in this software.
+    !        If this type of interval is provided, a 1-minute correction
+    !        is added to the initial date.
+    !        (Check it later with manual on codes)
     !---------------------------------------------------------------------------
 	subroutine get_time_slot2(year,month,day,ts,JDATE1,JDATE2)
 	  integer,           intent(in)::year,month,day ! Reference date and time in LMTZ
@@ -674,6 +679,7 @@ write(*,'(" WIGOS=[",i2.2,"-",i5.5,"-",i5.5,"-",a16,"]")')WIGOS1,WIGOS2,WIGOS3,W
 		JDATE2=JDATE+1.0
 	  end if
 	  if (ts%minute==1) JDATE2=JDATE2-1.0/60.0/24.0
+	  if (ts%minute==0) JDATE1=JDATE1+1.0/60.0/24.0 ! +1 minute to fix the begginnig of closed time interval
 
 
 
