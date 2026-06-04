@@ -76,22 +76,28 @@ After the edition type on terminal the command **source ./bashrc** to apply chan
 5 - testing BUFR DAYCLI codification
 ---------------
 
-The daycli_enconder1 tool code DAYCLI BUFR file from a text file in format1  
 
-**Basic line command**
+**5.1 - Running the test example** 
 
+There are two examples of DAYCLI codification using daycli_tookit: In the example/example_01 directory the  script  **run_example01.sh** demonstrates the encoding of daycli with **daycli_encoder1** ,  using text input file format-1; in the example/example_02, the script **run_example02.sh** demonstrates the encoding of daycli with **daycli_encoder2** ,  using text input file format-2. 
+
+Demostration of the decoding of daycli using two different tools: **a) daycli_decoder** (which decodes daycli back to the text ) and **b) bufr_dump** are also included.
+
+See and run the scripts **run_example01.sh**  or **run_example02.sh** and see the results.   See **iten 6** for a general description of format 1 and format 2.
+
+Notes this script is a bash script for linux.  If you are using dos windows or windows terminal some adaptations can be necessary. 
+
+
+**5.2 - Basic line command**
+
+To use this tool as a coding layer within the user's system, the basic command to be implemented follows one of the models below:
+
+Using format1:
+
+    daycli_encoder1 -i "Name_of_input_text_file_format1.txt"  -o "daycli_output_BUFR_file.bufr"
+or using format2:
 
     daycli_encoder2 -i "Name_of_input_text_file_format2.txt"  -o "daycli_output_BUFR_file.bufr"
-
-
-**Running the test example** 
-
-There are two examples of DAYCLI codification using daycli_tookit: In the example/example_01 directory the  script  **run_example01.sh** demonstrates the encoding of daycli with **daycli_encoder1** ,  using text input file format-1; in the example/example_02, the script **run_example02.sh** demonstrates the encoding of daycli with **daycli_encoder2** ,  using text input file format-2. Demostration of the decoding of daycli using two different tools: **a) daycli_decoder** (which decodes daycli back to the text ) and **b) bufr_dump** are also included.
-
-
-See and run the scripts **run_example01.sh**  or **run_example02.sh** and see the results.   
-
-Note: this script is a bash script for linux.  If you are using dos windows or windows terminal some adaptations can be necessary. 
 
 
 6 - Input data formats 
