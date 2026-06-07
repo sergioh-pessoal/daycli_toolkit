@@ -22,12 +22,12 @@ The software provided here, DAYCLI_TOOLKIT was developed at the Brazilian Nation
 3 - Simple examples is also included
 
 
-1- Requirements: 
+2- Requirements: 
 ---------
  - A fortran 90 compiler or Higher. For example: gfortran, g95, ifort, pgf90, etc. 
 - Linux "make" command or Windows "nmake" command.
 
-2 - Compilation in Linux 
+3 - Compilation in Linux 
 ---------
 
 In case you already have gfortran installed, the daycli_toolkit can be compiled by just typing the command **make** in the terminal.
@@ -49,7 +49,7 @@ Then type **make**
 
 In case you are using another fortran compiler, that is not listed above, you can edit and include the appropriate directive in you case.
 
-3 - Compilation in MS-Windows
+4 - Compilation in MS-Windows
 --------
 
 The daycli_toolkit was developed in linux, but it can be compiled and used in Windows (DOS terminal or MS-Windows terminal).However, the g95 fortran compiler and nmake command from the Microsoftware Visual Studio must be installed in your system.
@@ -60,7 +60,7 @@ Type the command  below on DOS terminal or Windows terminal to compile
 #
 
 
-4 - Environment variables
+5 - Environment variables
 ---------
 After compilation it is recommended that you set the environment **MBUFR_TABLES** in your system with the path to the folder where BUFR tables are. 
 
@@ -73,22 +73,22 @@ export MBUFR_TABLES=/home/user/daycli_toolkit/bufrtables
 #
 After the edition type on terminal the command **source ./bashrc** to apply changes. 
 
-5 - testing BUFR DAYCLI codification
+6 - testing BUFR DAYCLI codification
 ---------------
 
 
-**5.1 - Running the test example** 
+**6.1 - Running the test example** 
 
 There are two examples of DAYCLI codification using daycli_tookit: In the example/example_01 directory the  script  **run_example01.sh** demonstrates the encoding of daycli with **daycli_encoder1** ,  using text input file format-1; in the example/example_02, the script **run_example02.sh** demonstrates the encoding of daycli with **daycli_encoder2** ,  using text input file format-2. 
 
 Demostration of the decoding of daycli using two different tools: **a) daycli_decoder** (which decodes daycli back to the text ) and **b) bufr_dump** are also included.
 
-See and run the scripts **run_example01.sh**  or **run_example02.sh** and see the results.   See **iten 6** for a general description of format 1 and format 2.
+See and run the scripts **run_example01.sh**  or **run_example02.sh** and see the results.   See **item 7** for a general description of format 1 and format 2.
 
 Notes this script is a bash script for linux.  If you are using dos windows or windows terminal some adaptations can be necessary. 
 
 
-**5.2 - Basic line command**
+**6.2 - Basic line command**
 
 To use this tool as a coding layer within the user's system, the basic command to be implemented follows one of the models below:
 
@@ -100,12 +100,12 @@ or using format2:
     daycli_encoder2 -i "Name_of_input_text_file_format2.txt"  -o "daycli_output_BUFR_file.bufr"
 
 
-6 - Input data formats 
+7 - Input data formats 
 ------------
 
 There are two possible formats for the input data: The format used by daycli_encoder1 tool (format-1) and the format used by daycli_encoder2 (format-2). Both tools produce the exactly same BUFR DAYCLI message according to template **3-07-095**. The differece is that the daycli_encoder1 automaticaly calculates the time period of each variable, necessary for DAYCLI messages acording to fixed parameters provided in format-1, while daycli_encoder2 does not process any calculations. It just encodes all information as it is provided in format-2. In both cases, the input data formats are based on “fortran namelist” format, in which groups of information are written in a structure that starts with "$GroupName" and closes with “/” .  More detailes about format-1 and 2 are provided below
 
-**6.1 Common grous in format 1 and format2**
+**7.1 Common grous in format 1 and format2**
 
 Both formats have the same initial groups as in the example
 
@@ -133,7 +133,7 @@ SECTION 1 group
      /
 
 
-**6.2 Input text Format 1**
+**7.2 Input text Format 1**
   
 In addition to the groups presented in item 6.1, format-1 there are the following groups.
 
@@ -185,7 +185,7 @@ The example below shows the first few rows of the $DATA_SECTION of the format1.
 
 Complete examples of format 1 are included in the ./examples/example01/ 
 
-**6.3 Input text format 2**
+**7.3 Input text format 2**
 
 Format 2 does not have the &STIME_{TT,TN,TM,RR,DS} groups like format 1. Instead, the time periods are provided directly in the $DATA_SECTION group. In other words, daycli_encoder2 does not perform any time window processing; it directly encodes the data in the DAYCLI message as it is provided in format 2.
 
@@ -222,9 +222,9 @@ The example below shows the first few rows of the $DATA_SECTION of the format2.
 Complete examples of format 2 are included in the ./examples/example02/ 
 
 
-7 - Notes
+8 - Notes
 --------
-7.1 - The quality flag provide in format 1 and 2 are associated with respective parameter in codification process through the BUFR sequence 2-04-008; 0-31-021 which is set as 5.  
+8.1 - The quality flag provide in format 1 and 2 are associated with respective parameter in codification process through the BUFR sequence 2-04-008; 0-31-021 which is set as 5.  
   The correspondent table associated with "0-31-021" is "5" that can be found on "Code BUFR and Flag table"  and it is also presented below:
    - 0 = Data checked and declared good;
    - 1 = Data checked and declared suspect;
@@ -237,9 +237,9 @@ Complete examples of format 2 are included in the ./examples/example02/
    - 8-254 = Reserved;
    - 255 = Missing (QC info not available)
 
- 7.2 - Software updates and other information can be obtained via the link https://github.com/sergioh-pessoal/daycli_toolkit or by contacting the author at sergioh.pessoal@gmail.com
+ 8.2 - Software updates and other information can be obtained via the link https://github.com/sergioh-pessoal/daycli_toolkit or by contacting the author at sergioh.pessoal@gmail.com
 
-   8 - REFERENCES
+   9 - REFERENCES
    --------------
 [1] Jones, P.D., Lister, D.H., Osborn, T.J., Harpham, C., Salmon, M., Morice, C.P., 2012: Hemispheric and large-scale land-surface air temperature variations: An extensive revision and an update to 2010. Journal of Geophysical Research, 117, D05127, doi:10.1029/2011JD017139.
 
