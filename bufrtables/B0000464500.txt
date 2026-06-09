@@ -328,7 +328,6 @@
  003032 CHANNEL CENTRE FREQUENCY                                         HZ                        -6            0  26 HZ                       -6        10
  003033 CHANNEL BANDWIDTH                                                HZ                        -6            0  26 HZ                       -6        10
  003034 CHANNEL WAVELENGTH                                               M                          9            0  16 M                         9         5
- 003035 INCIDENCE ANGLE                                                  DEG                        2            0  14                           0         0
  004001 YEAR                                                             A                          0            0  12 A                         0         4
  004002 MONTH                                                            MON                        0            0   4 MON                       0         2
  004003 DAY                                                              D                          0            0   6 D                         0         2
@@ -490,7 +489,6 @@
  008025 TIME DIFFERENCE QUALIFIER                                        CODE TABLE                 0            0   4 CODE TABLE                0         2
  008026 MATRIX SIGNIFICANCE                                              CODE TABLE                 0            0   6 CODE TABLE                0         2
  008027 TYPE OF SEA-SURFACE HEIGHT ANOMALY MEASUREMENT                   CODE TABLE                 0            0   8                           0         0
- 008028 EXTENDED TIME SIGNIFICANCE                                       CODE TABLE                 0            0  10                           0         0
  008029 SURFACE TYPE                                                     CODE TABLE                 0            0   8 CODE TABLE                0         3
  008030 MANUAL ON CODES (VOLUME I.1, SECTION C) CODE TABLE FROM WHICH DA NUMERIC                    0            0  13 NUMERIC                   0         4
  008031 DATA CATEGORY - CREX TABLE A                                     NUMERIC                    0            0   8 NUMERIC                   0         3
@@ -517,7 +515,6 @@
  008054 QUALIFIER FOR WIND SPEED OR WIND GUSTS                           CODE TABLE                 0            0   3 CODE TABLE                0         1
  008055 METHOD USED TO CALCULATE THE AVERAGE WIND COMPONENTS AFTER REMOV CODE TABLE                 0            0   4                           0         0
  008060 SAMPLE SCANNING MODE SIGNIFICANCE                                CODE TABLE                 0            0   4 CODE TABLE                0         2
- 008061 SURFACE FLAG SOURCE                                              CODE TABLE                 0            0   4 CODE TABLE                0         2
  008065 SUN-GLINT INDICATOR                                              CODE TABLE                 0            0   2 CODE TABLE                0         1
  008066 SEMI-TRANSPARENCY INDICATOR                                      CODE TABLE                 0            0   2 CODE TABLE                0         1
  008070 VERTICAL SOUNDING PRODUCT QUALIFIER                              CODE TABLE                 0            0   4 CODE TABLE                0         2
@@ -1154,13 +1151,8 @@
  021029 CROSS-POLARIZATION CORRELATION COEFFICIENT                       NUMERIC                    2         -100   8 NUMERIC                   2         3
  021030 SIGNAL TO NOISE RATIO                                            DB                         0          -32   8 DB                        0         3
  021031 VERTICALLY INTEGRATED LIQUID-WATER CONTENT                       KG M-2                     0            0   7 KG M-2                    0         3
- 021034 BACKSCATTER FLAG                                                 FLAG TABLE                 0            0  16                           0         0
  021036 RADAR RAINFALL INTENSITY                                         M/S                        7            0  12 M/S                       7         4
- 021037 SLOPE                                                            DB/DEG                     2          -80   7                           0         0
- 021038 CURVATURE                                                        DB/DEG2                    4        -6000  14                           0         0
  021041 BRIGHT-BAND HEIGHT                                               M                         -2            0   8 M                        -2         3
- 021049 AMPLITUDE OF ECHO (DIGITIZER COUNTS)                             NUMERIC                    0            0  16 NUMERIC                   0         5
- 021050 DECAY TIME FOR ECHO TO FALL TO HALF OF ITS PEAK AMPLITUDE        S                          3            0  16 S                         3         5
  021051 SIGNAL POWER ABOVE 1 MW                                          DB                         0         -256   8 DB                        0         3
  021062 BACKSCATTER                                                      DB                         2        -5000  13 DB                        2         4
  021063 RADIOMETRIC RESOLUTION (NOISE VALUE)                             %                          1            0  10 %                         1         4
@@ -1255,7 +1247,6 @@
  021165 ASCAT EXTRAPOLATED REFERENCE FUNCTION PRESENCE                   NUMERIC                    3            0  10 NUMERIC                   3         4
  021166 LAND FRACTION                                                    NUMERIC                    3            0  10 NUMERIC                   3         4
  021167 SUBSURFACE SCATTERING PROBABILITY                                %                          0            0   7 %                         0         3
- 021168 SCATTERING MECHANISM                                             CODE TABLE                 0            0   8                           0         0
  021169 ICE PRESENCE INDICATOR                                           CODE TABLE                 0            0   2 CODE TABLE                0         1
  021170 C BAND CORRECTED OCEAN BACKSCATTER COEFFICIENT                   DB                         2       -32768  16 DB                        2         5
  021171 RMS C BAND CORRECTED OCEAN BACKSCATTER COEFFICIENT               DB                         2       -32768  16 DB                        2         5
@@ -1277,7 +1268,6 @@
  021187 RMS SPECIFIC BAND AUTOMATIC GAIN CONTROL                         DB                         2            0   8 DB                        2         3
  021188 NUMBER OF VALID POINTS FOR SPECIFIC BAND AUTOMATIC GAIN CONTROL  NUMERIC                    0            0   7 NUMERIC                   0         3
  021189 CORRECTED OCOG BACKSCATTER COEFFICIENT (NEGATIVE REFERENCE)      DB                         2       -32768  16 DB                        2         6
- 021190 AMBIGUITY INDEX                                                  NUMERIC                    0            0   4                           0         0
  022001 DIRECTION OF WAVES                                               DEGREE TRUE                0            0   9 DEGREE TRUE               0         3
  022002 DIRECTION OF WIND WAVES                                          DEGREE TRUE                0            0   9 DEGREE TRUE               0         3
  022003 DIRECTION OF SWELL WAVES                                         DEGREE TRUE                0            0   9 DEGREE TRUE               0         3
@@ -1490,7 +1480,6 @@
  025036 ATMOSPHERICS LOCATION METHOD                                     CODE TABLE                 0            0   4 CODE TABLE                0         2
  025037 SST BIAS                                                         K                          2         -127   8 K                         2         3
  025038 DIFFERENCE BETWEEN SST AND ANALYSIS                              K                          1         -127   8 K                         1         3
- 025039 NOISE CURVATURE                                                  DB/DEG2                    5            0  16                           0         0
  025040 CO2 WIND PRODUCT DERIVATION                                      CODE TABLE                 0            0   4 CODE TABLE                0         2
  025041 MOVING PLATFORM DIRECTION REPORTING METHOD                       CODE TABLE                 0            0   2 CODE TABLE                0         1
  025042 MOVING PLATFORM SPEED REPORTING METHOD                           CODE TABLE                 0            0   2 CODE TABLE                0         1
@@ -1692,9 +1681,6 @@
  033054 OVERALL QUALITY OF RETRIEVED ATMOSPHERIC PROFILE                 CODE TABLE                 0            0   3 CODE TABLE                0         1
  033055 WIND VECTOR QUALITY FLAG                                         FLAG TABLE                 0            0  24 FLAG TABLE                0         8
  033056 SIGMA-0 QUALITY FLAG                                             FLAG TABLE                 0            0  24 FLAG TABLE                0         8
- 033057 SCAT L2 APPLIED CORRECTION FLAG                                  FLAG TABLE                 0            0  16 FLAG TABLE                0         6
- 033058 SCAT L2 FLAG CAUSE MISSING DATA                                  FLAG TABLE                 0            0  16 FLAG TABLE                0         6
- 033059 SCAT L2 THRESHOLD FLAG                                           FLAG TABLE                 0            0  16 FLAG TABLE                0         6
  033060 GQISFLAGQUAL - INDIVIDUAL IASI-SYSTEM QUALITY FLAG               CODE TABLE                 0            0   2 CODE TABLE                0         1
  033061 GQISQUALINDEX - INDICATOR FOR INSTRUMENT NOISE PERFORMANCE (CONT %                          0            0   7 %                         0         3
  033062 GQISQUALINDEXLOC - INDICATOR FOR GEOMETRIC QUALITY INDEX         %                          0            0   7 %                         0         3
@@ -1750,10 +1736,6 @@
  033117 IN BOUNDS CHECK                                                  FLAG TABLE                 0            0  17 FLAG TABLE                0         6
  033118 RELATIVE ERROR PERCENTAGE                                        %                          2       -10000  15 %                         2         5
  033119 FORECAST ERROR PERCENTAGE                                        %                          0         -100   8 %                         0         3
- 033120 IRS SPATIAL QUALITY                                              FLAG TABLE                 0            0  14                           0         0
- 033121 IRS DETECTOR QUALITY                                             FLAG TABLE                 0            0   5                           0         0
- 033122 ESTIMATED ERROR IN BACKSCATTER                                   DB                         2            0  10 DB                        2         4
- 033123 ESTIMATED ERROR IN SLOPE                                         DB/DEG                     3          -40   6 DB/DEG                    3         2
  035000 FM AND REGIONAL CODE NUMBER                                      CODE TABLE                 0            0  10 CODE TABLE                0         3
  035001 TIME FRAME FOR MONITORING                                        CODE TABLE                 0            0   3 CODE TABLE                0         1
  035011 NUMBER OF REPORTS ACTUALLY RECEIVED                              NUMERIC                    0            0  14 NUMERIC                   0         4
@@ -1844,7 +1826,6 @@
  040075 RETRIEVAL ERROR COVARIANCE MATRIX FOR HUMIDITY IN PRINCIPAL COMP NUMERIC                    0            0  21 NUMERIC                   0         7
  040076 RETRIEVAL ERROR COVARIANCE MATRIX FOR TEMPERATURE IN PRINCIPAL C NUMERIC                    0            0  21 NUMERIC                   0         7
  040077 OCEAN PRODUCT QUALITY FLAG                                       FLAG TABLE                 0            0   8 FLAG TABLE                0         3
- 040078 SATELLITE RANGE TO FIRST BIN                                     M                          1            0  27                           0         0
  040080 CLOUD TEST RESULTS FOR IASI-NG LEVEL 2                           FLAG TABLE                 0            0   5 FLAG TABLE                0         2
  040081 OLCI LEVEL 1 CLASSIFICATION AND QUALITY                          FLAG TABLE                 0            0  31                           0         0
  041001 PCO2                                                             PA                         3            0  18 PA                        3         6
