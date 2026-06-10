@@ -24,6 +24,8 @@ program bufrdump
 ! 2010-05-29 SHSF - odified in (* 1) to allow printing of BUFR with error
 ! 2018-05-23 SHSF - Added filter for variable characters with code between 31 to 127
 ! 2020-09-21 SHSF - Added option to print telecommunications header 
+! 2025-01-13 SHSF - Check BUFRTABLES directory
+! 2025-08-15 SHSF - Decode messages  even with error in BUFR tables versions
  USE mbufr
  USE mcodesflags
  use stringflib
@@ -71,18 +73,22 @@ implicit none
   integer                             ::vrb !Verbosidade
   real                                ::null  ! Valor indefinido 
   logical                             ::exists
+  integer                             ::VerMasterTable
 !}
 
  perr=.false.
  null=undef()
  ! Inicio do programa 
  !{ Pega os argumentos de Entrada: Data e Nomes dos arquivos de entrada e saida
+  call getenv("MBUFR_TABLES",path2tables)
+
+
    call getarg2(argname,arg,narg)
      err2=0
      err=0
      nmm=0
      nss=0
-     vrb=3
+     vrb=0
      prt_header=.false.
      wsi_only=.false.
      select(1)%btype=any
@@ -91,7 +97,6 @@ implicit none
      selectopt=.false.
      x1=0
      x2=0
-     path2tables=""
      rmk=1
     if ((argname(1)=="?").and.(narg>=4)) then 
       infile=arg(1)
@@ -139,10 +144,12 @@ implicit none
     end if
 
     if (x1==0) then 
+      call init_mbufr(vrb,.true.,VerMasterTable)
       print *,"+--------------------------------------------------------+"
       print *,"| INPE BUFRDUMP : Decode FM94 BUFR files                 |"
-      print *,"| Version 21.09.2020                                     |"
+      print *,"| Version 15.08.2025                                     |"
       print *,"| Include MBUFR-ADT module ",MBUFR_VERSION,"     |"
+   write(*,'(" | Version of Master Table :",i3,"                           |")')VerMasterTable
       print *,"+--------------------------------------------------------+"
       print *,"| use:       bufrdump -i infile -o outfile {options}     |"
       print *,"+--------------------------------------------------------+"
@@ -175,14 +182,12 @@ implicit none
   
  !{  initializes the mcodesflags module and loads the table-A and the table-C1
     call init_mcodesflags(path2tables)
-
  !}
 
  
 !{ Processa a leitura dos dados para cada um dos "nf" arquivos fornecidos.
 
     NBYTES = 0
- 
     call INIT_MBUFR(vrb,.true.)
 
 	inquire(FILE = infile, EXIST = exists)
@@ -261,43 +266,48 @@ implicit none
     If ((NBYTES > 0).and.(IOERR(1)==0)) Then
       nm=nm+1
       if (err>0) err2=err2+1 
-      if((err==0).or.(err>20)) then 
-	if (prt_header) then
-		ii=index(header,"BUFR")-1
-		if (ii==0) ii=len_trim(header)
-		write(3,'(1x,a)')"["//header(1:ii)//"]"
-	end if 
-        write(3,'(1X,a,i2)')":BUFR: # EDITION =",BUFR_ED
-        write(3,'(1X,I4," # MBUFR Error code")')err
-        write(3,'(1X,a)')":SEC1:"
-        write(3,'(1x,I4," # BUFR MASTER TABLE")')sec1%NumMasterTable
-        write(3,'(1X,I4," # ORIGINATING CENTER: ",a50)')sec1%center,tabcc1(sec1%center)
-        write(3,'(1X,I4," # ORIGINATING SUBCENTER")')sec1%subcenter
-        write(3,'(1X,I4," # UPDATE SEQUENCE NUMBER")')sec1%update
-	if (sec1%sec2present) then  
-	 write(3,'(1X,I4," # OPTIONAL SECTION (PRESENT BUT NOT PRINT)")')1
-	else
-	write(3,'(1X,I4," # NO OPTIONAL SECTION")')0
-	end if
-        write(3,'(1X,I4," # DATA CATEGORY: ",a50)')sec1%bType,tabA(sec1%btype)
-        write(3,'(1X,I4," # DATA SUBCATEGORY: ",a50)')sec1%intbsubtype,tabCC13(sec1%btype,sec1%intbsubtype)
-        write(3,'(1X,I4," # LOCAL DATA SUBCATEGORY ")')sec1%bsubtype
-        write(3,'(1X,I4," # BUFR MASTER TABLE VERSION NUMBER")') sec1%VerMasterTable
-        write(3,'(1X,I4," # LOCAL TABLE VERSION NUMBER")') sec1%VerLocalTable
-        write(3,'(1X,I4," # YEAR ")')sec1%year
-        write(3,'(1X,I4," # MONTH ")')sec1%month
-        write(3,'(1X,I4," # DAY ")')sec1%day
-        write(3,'(1X,I4," # HOUR ")')sec1%hour
-        write(3,'(1X,I4," # MINUTE ")')sec1%minute
-      !**********
-      ! SECAO 3 *
-      !**********
-      !{ 
-        write(3,'(1X,a)')":SEC3:"
-        if ((sec3%nsubsets>nss).and.(nss>0))  sec3%nsubsets=nss
-        write(3,'(1X,i5," # Num.subsets")')sec3%nsubsets
-        write(3,'(1X,i5," # Num.descriptors")')sec3%ndesc
-        write(3,'(1x,i5," # Flag for Compressed data (1=compressed 0=uncompressed)")')sec3%is_cpk
+      if((err==0).or.(err>12)) then
+
+         !{
+         if (prt_header) then
+            ii=index(header,"BUFR")-1
+            if (ii==0) ii=len_trim(header)
+            write(3,'(1x,a)')"["//header(1:ii)//"]"
+         end if
+         !}
+         write(3,'(1X,a,i2)')":BUFR: # EDITION =",BUFR_ED
+         write(3,'(1X,I4," # MBUFR Error code")')err
+         write(3,'(1X,a)')":SEC1:"
+         write(3,'(1x,I4," # BUFR MASTER TABLE")')sec1%NumMasterTable
+         write(3,'(1X,I4," # ORIGINATING CENTER: ",a50)')sec1%center,tabcc1(sec1%center)
+         write(3,'(1X,I4," # ORIGINATING SUBCENTER")')sec1%subcenter
+         write(3,'(1X,I4," # UPDATE SEQUENCE NUMBER")')sec1%update
+
+         if (sec1%sec2present) then
+               write(3,'(1X,I4," # OPTIONAL SECTION (PRESENT BUT NOT PRINT)")')1
+         else
+               write(3,'(1X,I4," # NO OPTIONAL SECTION")')0
+         end if
+
+           write(3,'(1X,I4," # DATA CATEGORY: ",a50)')sec1%bType,tabA(sec1%btype)
+           write(3,'(1X,I4," # DATA SUBCATEGORY: ",a50)')sec1%intbsubtype,tabCC13(sec1%btype,sec1%intbsubtype)
+           write(3,'(1X,I4," # LOCAL DATA SUBCATEGORY ")')sec1%bsubtype
+           write(3,'(1X,I4," # BUFR MASTER TABLE VERSION NUMBER")') sec1%VerMasterTable
+           write(3,'(1X,I4," # LOCAL TABLE VERSION NUMBER")') sec1%VerLocalTable
+           write(3,'(1X,I4," # YEAR ")')sec1%year
+           write(3,'(1X,I4," # MONTH ")')sec1%month
+           write(3,'(1X,I4," # DAY ")')sec1%day
+           write(3,'(1X,I4," # HOUR ")')sec1%hour
+           write(3,'(1X,I4," # MINUTE ")')sec1%minute
+          !**********
+          ! SECAO 3 *
+          !**********
+          !{
+          write(3,'(1X,a)')":SEC3:"
+         if ((sec3%nsubsets>nss).and.(nss>0))  sec3%nsubsets=nss
+         write(3,'(1X,i5," # Num.subsets")')sec3%nsubsets
+         write(3,'(1X,i5," # Num.descriptors")')sec3%ndesc
+         write(3,'(1x,i5," # Flag for Compressed data (1=compressed 0=uncompressed)")')sec3%is_cpk
     !    write(3,'(1x,i5," # Flag for Data converted from a TAC message")')sec3%is_tac
         
         nsubsets=sec3%nsubsets
@@ -342,7 +352,7 @@ implicit none
                   !{ Se for variavel corrente ou a anterior for caracter entao processa essa parte
                   
                   if (sec4%c(i,j)==numchar) then !...(Se Variavel corrente acumulla os caracteres)
-		    p_numchar=numchar	
+		    p_numchar=numchar
                     IF (p_numchar>255) p_numchar=255 
 		    if ((sec4%r(i,j)>31).and.(sec4%r(i,j)<127))then
                        auxtxt(p_numchar+1:p_numchar+1)=char(int(sec4%r(i,j)))
@@ -379,6 +389,7 @@ implicit none
                     if(sec4%r(i,j)/=null) then 
                       l4=l4+1
                       txt3=""
+	
                       write(txt3,'(1x,F22.5," # ",i5,") ",a1,i6.6,"-",a91)')sec4%r(i,j),l4,son,sec4%d(i,j),ucases(txt)
                       write(3,'(a)')trim(txt3)
                     elseif (sec4%d(i,j)<=99999) then  
