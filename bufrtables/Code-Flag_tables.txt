@@ -1068,15 +1068,15 @@ CodFig,"Type of data buoy"
    7, "Mean absolue error",
    8, "Reserved",
    9, "Best estimate of standard deviation (N-1)",
-   10,"Standard deviation (N)      "
-   11,"Harmonic mean "        
+   10,"Standard deviation (N)      ",
+   11,"Harmonic mean ",
    12,"Root-mean-square vector error "               
    13,"Root-mean-square"      
    32,"Verctor mean"
 ::
                                             
 :008024:
-  CodeFigure,"Differece statistics"
+  CodFig,"Differece statistics"
    2, "Observed minus maximum",                      
    3, "Observed minus minimum",                      
    4, "Observed minus mean",                         
@@ -1090,7 +1090,7 @@ CodFig,"Type of data buoy"
    22,"Observed minus hydrostatically calculated value", 
 ::
 :008028:
-!CodFig,Time significance
+ CodFig,"Time significance"
  0,"Reserved"
  1,"Time series"
  2,"Time averaged (see Note 1)"
@@ -1135,7 +1135,7 @@ CodFig,"Type of data buoy"
  42,"Time at which the daily and instantaneous measurement is made (LMTZ)"
 ::
 :008094:
- CodeFigure,"Method used"
+ CodFig,"Method used"
  0,"Average of maximum and minimum values: Tm = ( Tx + Tn) / 2"
  1,"Average of the 8 tri-hourly observation"
  2,"Average of 24 hourly observation"

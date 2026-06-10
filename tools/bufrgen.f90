@@ -164,6 +164,8 @@
 			read(1,*,end=999) sec3%nsubsets
 			read(1,*,end=999) sec3%ndesc
 			read(1,*,end=999) sec3%is_cpk
+			 sec3%is_tac=0
+			 sec3%is_obs=0
 			!read(1,*,end=999) sec3%is_tac
 			allocate(sec3%d(sec3%ndesc),STAT=ERR)
 
@@ -243,6 +245,7 @@
     allocate(sec3%d(sec3%ndesc))
     sec3%is_cpk=0
     sec3%is_tac=0
+    sec3%is_obs=0
     sec3%d(1)=Ddesc
     call open_mbufr(2,outfile) ! Abre arquivo BUFR p/ gravacao 
     call write_mbufr(2,sec1,sec3,sec4)

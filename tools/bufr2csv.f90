@@ -49,7 +49,6 @@ implicit none
   integer                             ::first_son_code
   integer                             ::replication_factor
   integer                             ::replication_index
-  integer                             ::nbits
   character(len=50)                   ::ncod
   character(len=50),dimension(0:99999)::tabncod
   character(len=50),dimension(0:255)::tabA,tabCC1
@@ -227,7 +226,7 @@ implicit none
                 			if (sec4%d(i,1)/=null) then
 						
                         			if ((sec4%d(i,1)<99999).and.(sec4%d(i,1)>0)) then
-                                			txt=get_name_mbufr(sec4%d(i,1),nbits)!tabncod(sec4%d(i,1))
+                                			txt=get_name_mbufr(sec4%d(i,1))!tabncod(sec4%d(i,1))
                                 		else
                                 			txt=""
                                 		end if

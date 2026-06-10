@@ -1,24 +1,17 @@
-program bufrtime
+program mbufr_time
 !******************************************************************************
-!* BUFRTIME ! VERIFICACAO DE DATA  E HORA EM ARQUIVOS BUFR     !MCT-INPE-CPTE *
+!* MBUFR_TIME ! Check time window of a BUFR file              !MCT-INPE-CPTEC *
 !******************************************************************************
-!       VERSAO 1.0 	 
+!       VERSAO 1.1
 !*****************************************************************************  
-! 1 - DESCRICAO GERAL 
-! 
-!   Este programa ler as secoes 1 das mensagens BUFR dentro de um arquivo BUFR
-!   e verifica as datas e horas declaradas em cada um. 
-!  
-!   O resultado sao as datas/horas iniciais e finais de cada mensagem BUFR 
+! 1 - General description
 !
-!  4 - DEPENDENCIAS EXTERNAS: SISTEMA_OPERACIONAL.getenv e modulo MBUFR.F90
-! 
-!      Notas: a) Para sistema unix e linux getenv nao precisa ser declarado
-!             b) Para sistema windows e necessario incluse "USE MSFLIB"
+! This program reads date and time of each BUFR section 1 in the set of BUFR messages and
+! return the time window of the set
 !-------------------------------------------------------------------------------
-!   REVISAO HISTORICA
+!   Historical review
 ! 
-!ABRIL 2006  - SERGIO H. - Versao original 
+!ABRIR 2006  - SERGIO H. - Original version
 !SHSF 2011-01-18 : Modificado para poder verificar presenca de estacoes (ainda nao concluido)           
 
 
@@ -26,7 +19,7 @@ program bufrtime
 USE MBUFR
 !USE MSFLIB  ! Para compilacao em Windows ( Microsoft Power Station )
 USE DATELIB 
-USE STRINGFLIB, only:replace
+USE STRINGFLIB, only:replace ,getarg2,val
 implicit none
 
 !{ Declaracao das variaveis utilizadas em read_mbufr 
@@ -50,37 +43,62 @@ integer::nm                                   ! Numero de mensagens
 character(len=255),dimension(1000)::flist    ! Lista de arquivos de entrada 
 character(len=255)::outfile                  ! Nome do arquivo de saida
 character(len=255)::infile 
-
+integer                             ::yy,mm,dd,hh,mn
+integer                             ::X1
+logical                             ::check_sec4
+integer                             ::narg
+character(len=1),dimension(10)      ::argname
+character(len=255),dimension(10)    ::arg
+character(len=3)::a
+integer                             ::verbosity
 !Dim tlbufr As Double
 
-    
-select(1)%btype=0 ! Excluir a leitura de todos os tipos de mesagens bufr
-                            ! Somente a secao 1 de cada mensagem sera lida 
+check_sec4=.false.
+select(1)%btype=none ! Excluir a leitura de todos os tipos de mesagens bufr
+                      ! Somente a secao 1 de cada mensagem sera lida
 
 
    !{ Pega os argumentos de Entrada: Data e Nomes dos arquivos de entrada e saida
+   nfiles=0
+   verbosity=0
+   call getarg2(argname,arg,narg)
+   do i=1,narg
+        if (argname(i)=="o") then !,,,,,,,.....
+                 outfile=arg(i)
+                 x1=1
+        elseif (argname(i)=="4") then
+             check_sec4=.true.
+             select(1)%btype=any
+        elseif (argname(i)=="v") then
+             verbosity=val(arg(i))
+        elseif(argname(i)=="?") then
+				nfiles=nfiles+1
+				if (nfiles > 1000) then
+					print *,"Warning! The maximum number of provide files is 300. Other files will be ignored"
+					nfiles=1000
+					exit
+				else
+				    infile=replace(arg(i),"//","/")
+					flist(nfiles)=infile
+				end if
+        end if
+	end do
 
- 	argc =  iargc()	
+	if (x1*nfiles==0) then
 
-	
-	if ((argc>=2)) then
-
-		i=1;call GetArg(i,outfile)  
-		do i=2,argc
-			call Getarg(i,infile)
-               infile=replace(infile,"//","/")
-			flist(i-1)=infile
-			nfiles=i-1
-		end do
-		
-
-	else
 	   print *, "+--------------------------------------------------------------------------+"
-	   print *, "| bufrtime - Lista datas iniciais e finais de um conjuto de mensagens BUFR |"
-	   PRINT *, "| USE: bufrtime outfile bufrfile-1 bufrfile-2 ... bufrfile-n               |" 
-	   print *, "└─--------------------------------------------------------------------------+"
-	   print *,""
+	   print *, "| mbufr_time: reads date and time of each BUFR section 1 in a set of       |"
+	   print *, "| BUFR messages and return the time window of the set e mensagens BUFR     |"
+	   PRINT *, "|--------------------------------------------------------------------------|"
+	   PRINT *, "| USE: mbufr_time {options} -o <outfile> bufrfile-1 bufrfile-2 etc         |"
+	   print *, "|                                                                          |"
+	   print *, "|     options                                                              |"
+	   print *, "|      -4 : Checks date and time in section 4 insted section 1             |"
+	   print *, "|      -v : Verbosity (default=0)                                          |"
+	   print *, "+--------------------------------------------------------------------------+"
+
 	   stop
+
   	endif
   !}
 
@@ -94,7 +112,7 @@ do i=1,nfiles
    date_max=0.0
    nm=0
     
-    print *,"Pesquisando "//flist(i)
+    print *,"checking > "//trim(flist(i))
     !Call OPEN_MBUFR(1,flist(i),255,14,0)
     Call OPEN_MBUFR(1,flist(i))
 
@@ -116,13 +134,62 @@ write(2,'("| bufr: ",5x,a)')trim(flist(i))
 write(2,'("+-------------------+---------------------+")')
  10 CONTINUE   
   
-   Call READ_MBUFR(1,sec1,sec3,sec4, bUFR_ED, MBYTES,err,select)
-  
+  if (check_sec4) then
+      Call READ_MBUFR(1,sec1,sec3,sec4, bUFR_ED, MBYTES,err)
+  else
+      Call READ_MBUFR(1,sec1,sec3,sec4, bUFR_ED, MBYTES,err,select)
+  end if
+
     If ((MBYTES > 0).and.(IOERR(1)==0)) Then
         nm=nm+1
        !{ Obtem a data inicial e final de todos os dados 
         cdate=fjulian(sec1%year,sec1%month,sec1%day,sec1%hour,sec1%minute,0)
 
+
+
+        if (check_sec4)  then
+        !-------------------------------------------
+        ! Checking date and time from section 4
+        !-------------------------------------------
+        ! Use date and time from section1 in case
+        ! date in section 4 is note present
+        !-------------------------------------------
+         if( verbosity>0)  print *,"Checking date and time in section 4: message=",nm
+          do s=1,sec3%nsubsets
+            do v=1,sec4%nvars
+              if  (sec4%d(v,s)==4001) then
+                 yy=sec4%r(v,s)
+              elseif (sec4%d(v,s)==4002) then
+                 mm=sec4%r(v,s)
+              elseif (sec4%d(v,s)==4003) then
+                  dd=sec4%r(v,s)
+              elseif (sec4%d(v,s)==4004) then
+                 hh=sec4%r(v,s)
+              elseif (sec4%d(v,s)==4005) then
+                 mn=sec4%r(v,s)
+                 cdate=fjulian(yy,mm,dd,hh,mn,00)
+                 if (verbosity>0) print *,"Checking date and time in section 4: subset =",s,"date=",grdate(cdate)
+                 exit
+              end if
+            end do
+
+           if (cdate > 0) then
+              if (nm==1) then
+                 date_min=cdate
+                 date_max=cdate
+               end if
+
+              if ((date_min>cdate)) date_min=cdate
+              if ((date_max<cdate)) date_max=cdate
+          end if
+        end do
+
+
+        else
+        !---------------------------------------
+        ! Checking date and time from section 1
+        !-----------------------------------------
+        if (cdate > 0) then
           if (nm==1) then
              date_min=cdate
              date_max=cdate
@@ -130,21 +197,9 @@ write(2,'("+-------------------+---------------------+")')
                 
           if ((date_min>cdate)) date_min=cdate
           if ((date_max<cdate)) date_max=cdate
+        end if
        !}
-       !{ 
-         do s=1, sec3%nsubsets
-          COL(:)=0
-          do v=1,sec4%nvars 
-            if (sec4%d(v,s)==001102)  COL(1)=sec4%r(v,s)  ! NATIONAL STATION NUMBER (NUMERIC)! print *,sec4%d(1,s)
-            if (sec4%d(v,s)==004001)  COL(2)=sec4%r(v,s)  !YEAR
-            if (sec4%d(v,s)==004002)  COL(3)=sec4%r(v,s)  !MONTH
-            if (sec4%d(v,s)==004003)  COL(4)=sec4%r(v,s)  !DAY
-            if (sec4%d(v,s)==004004)  COL(5)=sec4%r(v,s)  !hour
-           end do
-           write(*,'("STATION=",I10,"|-->  DATE=",I4,3I2.2)')COL(1),COL(2),COL(3),COL(4),COL(5)
-           write(2,'("| STATION=",I10,"|-->  DATE=",I4,3I2.2," |")')COL(1),COL(2),COL(3),COL(4),COL(5)
-         end do 
-          
+       end if
    !deallocate(sec3%d,sec4%d,sec4%r,sec4%c)
  GoTo 10
  End If
